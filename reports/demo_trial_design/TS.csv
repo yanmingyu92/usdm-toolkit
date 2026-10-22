@@ -1,0 +1,11 @@
+STUDYID,DOMAIN,TSSEQ,TSPARMCD,TSPARM,TSVAL
+LY900018,TS,1,STUDYID,Study Identifier,LY900018
+LY900018,TS,2,TITLE,Trial Title,"A Phase 3 Study of Nasal Glucagon (LY900018) Compared to Intramuscular Glucagon for Treatment of
+Insulin-induced Hypoglycemia in Japanese Patients with Diabetes Mellitus"
+LY900018,TS,3,SPONSOR,Sponsor Name,LILLY
+LY900018,TS,4,REGID,Registry Identifier,NCT03421379
+LY900018,TS,5,PHASE,Trial Phase Classification,Phase III Trial
+LY900018,TS,6,INTMODEL,Intervention Model,Parallel Study
+LY900018,TS,7,BLIND,Trial Blinding Schema,Open Label Study
+LY900018,TS,8,STYPE,Study Type,Interventional Study
+LY900018,TS,9,ENROLL,Planned Enrollment,120
