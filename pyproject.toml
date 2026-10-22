@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "usdm-toolkit"
+version = "0.1.0"
+description = "Open-source toolchain for working with the CDISC USDM (Unified Study Definitions Model) deliverables: ct-align (model/CT consistency checker), trial-design (USDM JSON to SDTM Trial Design generator), rules (YAML-defined conformance rule executor)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "pyyaml>=6.0",
+    "openpyxl>=3.1",
+    "jsonata-python>=0.7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+usdm-toolkit = "usdm_toolkit.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"usdm_toolkit.rules" = ["library/*.yml", "library/*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

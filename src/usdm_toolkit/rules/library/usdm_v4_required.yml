@@ -1,0 +1,36 @@
+# Starter rule library: required-field constraints for USDM v4.0.
+#
+# Each constraint is taken from the Cardinality "1" / "1..*" attributes of the
+# corresponding class in Deliverables/UML/dataStructure.yml (DDF-RA v4.0.0).
+# The JSONata expression is evaluated against every JSON node whose
+# instanceType equals `scope`; a falsy or undefined result is a violation.
+rules:
+  - id: USDM-REQ-001
+    description: StudyVersion must have at least one study identifier (studyIdentifiers, cardinality 1..*)
+    severity: error
+    scope: StudyVersion
+    expression: $exists(studyIdentifiers) and $count(studyIdentifiers) > 0
+
+  - id: USDM-REQ-002
+    description: StudyVersion must have at least one study title (titles, cardinality 1..*)
+    severity: error
+    scope: StudyVersion
+    expression: $exists(titles) and $count(titles) > 0
+
+  - id: USDM-REQ-003
+    description: StudyArm must have a type code (type, cardinality 1)
+    severity: error
+    scope: StudyArm
+    expression: $exists(type)
+
+  - id: USDM-REQ-004
+    description: Encounter must have a non-empty name (name, cardinality 1)
+    severity: error
+    scope: Encounter
+    expression: $exists(name) and $length(name) > 0
+
+  - id: USDM-REQ-005
+    description: InterventionalStudyDesign must have an intervention model code (model, cardinality 1)
+    severity: error
+    scope: InterventionalStudyDesign
+    expression: $exists(model)

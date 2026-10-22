@@ -1,0 +1,11 @@
+STUDYID,DOMAIN,ARMCD,ARM,TAETORD,ETCD,ELEMENT,EPOCH
+AP1234,TA,ACTIVE,Active,1,SCREENIN,Screening,Screening
+AP1234,TA,ACTIVE,Active,2,BASELINE,Baseline,Baseline
+AP1234,TA,ACTIVE,Active,3,TREATMEN,Treatment 1,Treatment
+AP1234,TA,ACTIVE,Active,4,TREATME2,Treatment 2,Treatment
+AP1234,TA,ACTIVE,Active,5,FOLLOWUP,Follow Up,Follow-Up
+AP1234,TA,PLACEBO,Placebo,1,SCREENIN,Screening,Screening
+AP1234,TA,PLACEBO,Placebo,2,BASELINE,Baseline,Baseline
+AP1234,TA,PLACEBO,Placebo,3,TREATME2,Treatment 2,Treatment
+AP1234,TA,PLACEBO,Placebo,4,TREATMEN,Treatment 1,Treatment
+AP1234,TA,PLACEBO,Placebo,5,FOLLOWUP,Follow Up,Follow-Up

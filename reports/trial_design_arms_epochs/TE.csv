@@ -1,0 +1,4 @@
+STUDYID,DOMAIN,ETCD,ELEMENT,TESTRL,TEENRL
+NCT12345678,TE,SCREENIN,Screening,Study Start,Screened
+NCT12345678,TE,BASELINE,Baseline,Screened,Radomized
+NCT12345678,TE,TREATMEN,Treatment 1,Radomized,Completed treatment

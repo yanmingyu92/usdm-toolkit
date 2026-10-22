@@ -1,0 +1,3 @@
+STUDYID,DOMAIN,IETESTCD,IETEST,IECAT
+AP1234,TI,INCL001,Subjects shall be between [min_age] and [max_age],INCLUSION
+AP1234,TI,INCL002,Subjects shall be between [min_age] and [max_agexxx],INCLUSION

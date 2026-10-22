@@ -1,0 +1,9 @@
+STUDYID,DOMAIN,TSSEQ,TSPARMCD,TSPARM,TSVAL
+NCT12345678,TS,1,STUDYID,Study Identifier,NCT12345678
+NCT12345678,TS,2,TITLE,Trial Title,Something Very Official
+NCT12345678,TS,4,REGID,Registry Identifier,NCT12345678
+NCT12345678,TS,5,PHASE,Trial Phase Classification,Phase III Trial
+NCT12345678,TS,6,INTMODEL,Intervention Model,Parallel Study
+NCT12345678,TS,7,BLIND,Trial Blinding Schema,Open Label Study
+NCT12345678,TS,8,STYPE,Study Type,Interventional Study
+NCT12345678,TS,9,ENROLL,Planned Enrollment,120

@@ -1,0 +1,82 @@
+{
+  "url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/716",
+  "repository_url": "https://api.github.com/repos/cdisc-org/DDF-RA",
+  "labels_url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/716/labels{/name}",
+  "comments_url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/716/comments",
+  "events_url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/716/events",
+  "html_url": "https://github.com/cdisc-org/DDF-RA/issues/716",
+  "id": 5962184349,
+  "node_id": "I_kwDOH9lhd88AAAABY1-2nQ",
+  "number": 716,
+  "title": "dataStructure.yml: attributes on abstract classes carry a subclass's C-code, preferred term and definition (27 attributes)",
+  "user": {
+    "login": "kerfors",
+    "id": 1389725,
+    "node_id": "MDQ6VXNlcjEzODk3MjU=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/1389725?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/kerfors",
+    "html_url": "https://github.com/kerfors",
+    "followers_url": "https://api.github.com/users/kerfors/followers",
+    "following_url": "https://api.github.com/users/kerfors/following{/other_user}",
+    "gists_url": "https://api.github.com/users/kerfors/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/kerfors/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/kerfors/subscriptions",
+    "organizations_url": "https://api.github.com/users/kerfors/orgs",
+    "repos_url": "https://api.github.com/users/kerfors/repos",
+    "events_url": "https://api.github.com/users/kerfors/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/kerfors/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "labels": [
+
+  ],
+  "state": "open",
+  "locked": false,
+  "assignees": [
+
+  ],
+  "milestone": null,
+  "comments": 0,
+  "created_at": "2026-10-21T14:10:39Z",
+  "updated_at": "2026-10-21T14:10:39Z",
+  "closed_at": null,
+  "assignee": null,
+  "author_association": "NONE",
+  "issue_field_values": [
+
+  ],
+  "type": null,
+  "active_lock_reason": null,
+  "sub_issues_summary": {
+    "total": 0,
+    "completed": 0,
+    "percent_completed": 0
+  },
+  "issue_dependencies_summary": {
+    "blocked_by": 0,
+    "total_blocked_by": 0,
+    "blocking": 0,
+    "total_blocking": 0
+  },
+  "body": "For attributes on abstract classes, `dataStructure.yml` and `USDM_CT.xlsx` give different C-codes. In all 27 cases where they differ, the YAML carries the code, preferred term and definition of one concrete subclass, while `USDM_CT.xlsx` has its own entry for the abstract class attribute.\n\nExample, `SyntaxTemplate.text` (inherited by Characteristic, Condition, EligibilityCriterionItem, Endpoint, IntercurrentEvent and Objective):\n\n- `USDM_CT.xlsx` row 285: C207578 Syntax Template Text, \"A structured text string containing prescribed text interspersed with user-defined parameter values.\"\n- `dataStructure.yml`: C207478 Characteristic Text, \"An instance of structured text that represents the characteristic.\" This is the `USDM_CT.xlsx` entry for Characteristic.text (row 393).\n\nThis looks like a side effect of the generator choice described in #525: \"the attributes shown for them are the inherited attributes from the first sub class listed\". That fixed the Id / Ids references, but the C-code, preferred term and definition come from the subclass too. A consumer reading the YAML gets, for the text of an Objective, a definition about \"the characteristic\".\n\nAsk: for attributes on abstract classes, take the C-code, preferred term and definition from the abstract class's own `USDM_CT.xlsx` entry (abstract classes were kept in CT, see #196), or state in the documentation of `dataStructure.yml` that these entries mirror the first subclass.\n\n<details><summary>All 27 attributes</summary>\n\n| Attribute | dataStructure.yml | USDM_CT.xlsx | YAML code is the CT row of |\n| --- | --- | --- | --- |\n| Identifier.text | C215581 Administrable Product Identifier Text | C215450 Identifier Text | AdministrableProductIdentifier.text (row 485) |\n| PopulationDefinition.name | C207544 Study Cohort Name | C207520 Population Definition Name | StudyCohort.name (row 379) |\n| PopulationDefinition.label | C207543 Study Cohort Label | C207519 Population Definition Label | StudyCohort.label (row 381) |\n| PopulationDefinition.description | C207542 Study Cohort Description | C207517 Population Definition Description | StudyCohort.description (row 380) |\n| PopulationDefinition.plannedSex | C207541 Study Cohort Planned Sex | C207523 Population Definition Planned Sex | StudyCohort.plannedSex (row 382) |\n| PopulationDefinition.includesHealthySubjects | C207480 Study Cohort Includes Healthy Subjects Indicator | C207518 Population Definition Includes Healthy Subjects Indicator | StudyCohort.includesHealthySubjects (row 384) |\n| PopulationDefinition.plannedAge | C207545 Study Cohort Planned Age | C207701 Population Definition Planned Age | StudyCohort.plannedAge (row 383) |\n| PopulationDefinition.plannedCompletionNumber | C207546 Study Cohort Planned Completion Number | C207521 Population Definition Planned Completion Number | StudyCohort.plannedCompletionNumber (row 386) |\n| PopulationDefinition.plannedEnrollmentNumber | C207702 Study Cohort Planned Enrollment Number | C207522 Population Definition Planned Enrollment Number | StudyCohort.plannedEnrollmentNumber (row 387) |\n| PopulationDefinition.notes | C215547 Study Cohort Notes | C215551 Population Definition Notes | StudyCohort.notes (row 385) |\n| ScheduledInstance.name | C207533 Scheduled Activity Instance Name | C207455 Scheduled Instance Name | ScheduledActivityInstance.name (row 226) |\n| ScheduledInstance.label | C207532 Scheduled Activity Instance Label | C207454 Scheduled Instance Label | ScheduledActivityInstance.label (row 228) |\n| ScheduledInstance.description | C207531 Scheduled Activity Instance Description | C207453 Scheduled Instance Description | ScheduledActivityInstance.description (row 227) |\n| StudyDesign.name | C215626 Interventional Study Design Name | C201338 Study Design Name | InterventionalStudyDesign.name (row 567) |\n| StudyDesign.label | C215628 Interventional Study Design Label | C207548 Study Design Label | InterventionalStudyDesign.label (row 569) |\n| StudyDesign.description | C215627 Interventional Study Design Description | C147139 Study Design Description | InterventionalStudyDesign.description (row 568) |\n| StudyDesign.rationale | C215629 Interventional Study Design Rationale | C142705 Study Design Rationale | InterventionalStudyDesign.rationale (row 570) |\n| StudyDesign.therapeuticAreas | C215633 Interventional Study Design Therapeutic Areas | C101302 Therapeutic Areas | InterventionalStudyDesign.therapeuticAreas (row 574) |\n| StudyDesign.studyType | C215631 Interventional Study Design Study Type | C142175 Study Type | InterventionalStudyDesign.studyType (row 572) |\n| StudyDesign.characteristics | C215632 Interventional Study Design Characteristics | C207547 Study Design Characteristic | InterventionalStudyDesign.characteristics (row 573) |\n| StudyDesign.studyPhase | C215630 Interventional Study Design Study Phase | C48281 Trial Phase | InterventionalStudyDesign.studyPhase (row 571) |\n| StudyDesign.notes | C215634 Interventional Study Design Notes | C215508 Study Design Notes | InterventionalStudyDesign.notes (row 575) |\n| SyntaxTemplate.name | C207477 Characteristic Name | C207577 Syntax Template Name | Characteristic.name (row 392) |\n| SyntaxTemplate.label | C207476 Characteristic Label | C207576 Syntax Template Label | Characteristic.label (row 395) |\n| SyntaxTemplate.description | C207475 Characteristic Description | C207575 Syntax Template Description | Characteristic.description (row 394) |\n| SyntaxTemplate.text | C207478 Characteristic Text | C207578 Syntax Template Text | Characteristic.text (row 393) |\n| SyntaxTemplate.notes | C215548 Characteristic Notes | C215536 Syntax Template Notes | Characteristic.notes (row 397) |\n\n</details>\n\nFound while rendering USDM v4 as RDF. The check is reproducible from the pinned v4.0.0 files: https://kerfors.github.io/usdm-overlay/id/finding/abstract-class-attribute-ccodes/",
+  "closed_by": null,
+  "reactions": {
+    "url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/716/reactions",
+    "total_count": 0,
+    "+1": 0,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 0
+  },
+  "timeline_url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/716/timeline",
+  "performed_via_github_app": null,
+  "state_reason": null,
+  "pinned_comment": null
+}

@@ -1,0 +1,82 @@
+{
+  "url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/717",
+  "repository_url": "https://api.github.com/repos/cdisc-org/DDF-RA",
+  "labels_url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/717/labels{/name}",
+  "comments_url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/717/comments",
+  "events_url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/717/events",
+  "html_url": "https://github.com/cdisc-org/DDF-RA/issues/717",
+  "id": 5962205417,
+  "node_id": "I_kwDOH9lhd88AAAABY2AI6Q",
+  "number": 717,
+  "title": "Procedure.procedureType: a classification without a value list",
+  "user": {
+    "login": "kerfors",
+    "id": 1389725,
+    "node_id": "MDQ6VXNlcjEzODk3MjU=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/1389725?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/kerfors",
+    "html_url": "https://github.com/kerfors",
+    "followers_url": "https://api.github.com/users/kerfors/followers",
+    "following_url": "https://api.github.com/users/kerfors/following{/other_user}",
+    "gists_url": "https://api.github.com/users/kerfors/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/kerfors/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/kerfors/subscriptions",
+    "organizations_url": "https://api.github.com/users/kerfors/orgs",
+    "repos_url": "https://api.github.com/users/kerfors/repos",
+    "events_url": "https://api.github.com/users/kerfors/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/kerfors/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "labels": [
+
+  ],
+  "state": "open",
+  "locked": false,
+  "assignees": [
+
+  ],
+  "milestone": null,
+  "comments": 0,
+  "created_at": "2026-10-21T14:11:48Z",
+  "updated_at": "2026-10-21T14:11:48Z",
+  "closed_at": null,
+  "assignee": null,
+  "author_association": "NONE",
+  "issue_field_values": [
+
+  ],
+  "type": null,
+  "active_lock_reason": null,
+  "sub_issues_summary": {
+    "total": 0,
+    "completed": 0,
+    "percent_completed": 0
+  },
+  "issue_dependencies_summary": {
+    "blocked_by": 0,
+    "total_blocked_by": 0,
+    "blocking": 0,
+    "total_blocking": 0
+  },
+  "body": "`USDM_CT.xlsx` defines `Procedure.procedureType` (row 141, C188848 Procedure Type) as \"A characterization or classification of the study procedure.\", with Has Value List = N. In `dataStructure.yml` it is a string.\n\nThe same definition pattern elsewhere has a value list, for example `Endpoint.level` (row 73, C188826 Study Endpoint Level): \"A characterization or classification of the study endpoint that determines its category of importance relative to other study endpoints.\", Has Value List = Y (C188726).\n\nIn #79 the attribute was kept \"in case people are categorizing/classifying procedures\". As a free string, those classifications cannot be compared across studies.\n\nAsk: a value list for `procedureType` (or a binding to an existing code list), or a definition that says it is free text.\n\nFound while rendering USDM v4 as RDF: https://kerfors.github.io/usdm-overlay/id/finding/procedure-type-uncoded/",
+  "closed_by": null,
+  "reactions": {
+    "url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/717/reactions",
+    "total_count": 0,
+    "+1": 0,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 0
+  },
+  "timeline_url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/717/timeline",
+  "performed_via_github_app": null,
+  "state_reason": null,
+  "pinned_comment": null
+}

@@ -1,0 +1,82 @@
+{
+  "url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/718",
+  "repository_url": "https://api.github.com/repos/cdisc-org/DDF-RA",
+  "labels_url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/718/labels{/name}",
+  "comments_url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/718/comments",
+  "events_url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/718/events",
+  "html_url": "https://github.com/cdisc-org/DDF-RA/issues/718",
+  "id": 5962241848,
+  "node_id": "I_kwDOH9lhd88AAAABY2CXOA",
+  "number": 718,
+  "title": "ExtensionAttribute and ExtensionClass are still in dataStructure.yml (follow-up to #613)",
+  "user": {
+    "login": "kerfors",
+    "id": 1389725,
+    "node_id": "MDQ6VXNlcjEzODk3MjU=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/1389725?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/kerfors",
+    "html_url": "https://github.com/kerfors",
+    "followers_url": "https://api.github.com/users/kerfors/followers",
+    "following_url": "https://api.github.com/users/kerfors/following{/other_user}",
+    "gists_url": "https://api.github.com/users/kerfors/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/kerfors/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/kerfors/subscriptions",
+    "organizations_url": "https://api.github.com/users/kerfors/orgs",
+    "repos_url": "https://api.github.com/users/kerfors/repos",
+    "events_url": "https://api.github.com/users/kerfors/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/kerfors/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "labels": [
+
+  ],
+  "state": "open",
+  "locked": false,
+  "assignees": [
+
+  ],
+  "milestone": null,
+  "comments": 0,
+  "created_at": "2026-10-21T14:13:54Z",
+  "updated_at": "2026-10-21T14:13:54Z",
+  "closed_at": null,
+  "assignee": null,
+  "author_association": "NONE",
+  "issue_field_values": [
+
+  ],
+  "type": null,
+  "active_lock_reason": null,
+  "sub_issues_summary": {
+    "total": 0,
+    "completed": 0,
+    "percent_completed": 0
+  },
+  "issue_dependencies_summary": {
+    "blocked_by": 0,
+    "total_blocked_by": 0,
+    "blocking": 0,
+    "total_blocking": 0
+  },
+  "body": "#613 was closed with: \"We moved the extension classes to a separate UML package so that they are not included in the UML export and can be treated as API-only artefacts that don't need terminology.\"\n\n`dataStructure.yml` still includes both classes, in v4.0.0 and on the head of `release-4-1-0` (lines 2463 and 2531): ExtensionAttribute with 13 attributes and ExtensionClass with 4, none with a C-code or definition. As decided in #613, they have no rows in `USDM_CT.xlsx`.\n\nSo a consumer of the YAML sees two model classes without C-codes or definitions, and nothing to say they are API-only.\n\nAsk: leave them out of `dataStructure.yml`, as from the UML export, or mark them there as API-only.\n\nFound while rendering USDM v4 as RDF: https://kerfors.github.io/usdm-overlay/id/finding/extension-attributes-undefined/",
+  "closed_by": null,
+  "reactions": {
+    "url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/718/reactions",
+    "total_count": 0,
+    "+1": 0,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 0
+  },
+  "timeline_url": "https://api.github.com/repos/cdisc-org/DDF-RA/issues/718/timeline",
+  "performed_via_github_app": null,
+  "state_reason": null,
+  "pinned_comment": null
+}

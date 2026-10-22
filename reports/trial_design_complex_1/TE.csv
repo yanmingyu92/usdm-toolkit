@@ -1,0 +1,6 @@
+STUDYID,DOMAIN,ETCD,ELEMENT,TESTRL,TEENRL
+LY900018,TE,SCREENIN,Screening,Study Start,Day -1 of treatment period 1
+LY900018,TE,GLUCLY90,GLUC_LY900018,Day -1 of treatment period,End of Day 1 of treatment period
+LY900018,TE,WASHOUT,Wash Out,End of Day 1 of Treatment period 1,Day -1 of treatment period 2
+LY900018,TE,GLUC,GLUC,Day -1 of treatment period,End of Day 1 of treatment period
+LY900018,TE,FOLLOWUP,Follow Up,End of Day 1 of Treatment period 2,Leave Study

@@ -1,0 +1,6 @@
+STUDYID,DOMAIN,ETCD,ELEMENT,TESTRL,TEENRL
+AP1234,TE,SCREENIN,Screening,Study Start,Screened
+AP1234,TE,BASELINE,Baseline,Screened,Radomized
+AP1234,TE,TREATMEN,Treatment 1,Radomized,Completed treatment 1
+AP1234,TE,TREATME2,Treatment 2,Radomized,Completed treatment 2
+AP1234,TE,FOLLOWUP,Follow Up,Treated,Leave Study
