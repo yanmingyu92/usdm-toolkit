@@ -1,8 +1,8 @@
 # ct-align consistency report
 
-- Report date: 2026-10-22
-- Model file: `data/source/dataStructure.yml`
-- CT file: `data/source/USDM_CT.xlsx`
+- Report date: 2026-10-27
+- Model file: `data\source\dataStructure.yml`
+- CT file: `data\source\USDM_CT.xlsx`
 - Total findings: 263
 
 ## Summary by rule

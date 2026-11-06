@@ -1,7 +1,7 @@
 # USDM conformance rules report
 
-- Report date: 2026-10-22
-- Input: `reports/demo_broken.json`
+- Report date: 2026-10-27
+- Input: `reports\demo_broken.json`
 - Rules evaluated: 5
 - Total violations: 1
 

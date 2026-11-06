@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>usdm-toolkit — What has been done | DDF SME call 2026-10-27</title>
+<style>
+  :root{
+    --ink:#1a2332; --muted:#5a6575; --line:#dde3ec; --bg:#f6f8fb;
+    --accent:#0f5e8c; --accent2:#0d9488; --err:#b3401f; --warn:#946200;
+    --chip-e:#fdeeea; --chip-w:#fdf4e3; --chip-i:#e9f2fb;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.65 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .wrap{max-width:980px;margin:0 auto;padding:0 24px 80px}
+  header.hero{background:linear-gradient(135deg,#0f3a5c,#0f5e8c 55%,#0d9488);color:#fff;padding:44px 24px 38px}
+  header.hero .wrap{padding-bottom:0}
+  .kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;opacity:.85;margin:0 0 10px}
+  h1{margin:0 0 10px;font-size:32px;line-height:1.2}
+  .sub{margin:0;font-size:17px;opacity:.92;max-width:46em}
+  .meta{margin-top:18px;font-size:14px;opacity:.85}
+  .meta a{color:#fff}
+  h2{font-size:22px;margin:48px 0 6px;padding-top:10px;border-top:3px solid var(--line)}
+  h2 .no{color:var(--accent);font-weight:800;margin-right:8px}
+  h3{font-size:16.5px;margin:24px 0 6px}
+  p{margin:10px 0}
+  .lead{font-size:17px}
+  a{color:var(--accent)}
+  .muted{color:var(--muted)}
+  code,pre{font-family:ui-monospace,Consolas,"Cascadia Mono",Menlo,monospace;font-size:13.5px}
+  code{background:#eef1f6;padding:1px 5px;border-radius:4px}
+  pre{background:#0e1726;color:#dbe7f5;padding:16px 18px;border-radius:10px;overflow-x:auto;line-height:1.55}
+  pre .c{color:#7fd0c3}
+  pre .o{color:#9db8dd}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(20,35,60,.06)}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:#eef3f9;font-size:13px;letter-spacing:.02em}
+  tr:nth-child(even) td{background:#fafbfd}
+  .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .chip{display:inline-block;padding:1px 9px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap}
+  .ce{background:var(--chip-e);color:var(--err)} .cw{background:var(--chip-w);color:var(--warn)} .ci{background:var(--chip-i);color:var(--accent)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:18px 0}
+  .card{background:#fff;border:1px solid var(--line);border-left:5px solid var(--accent2);border-radius:10px;padding:14px 16px}
+  .card h4{margin:0 0 6px;font-size:15.5px;font-family:ui-monospace,Consolas,monospace;color:var(--accent)}
+  .card p{margin:4px 0;font-size:14px}
+  .callout{border-left:5px solid var(--accent);background:#fff;border-radius:0 10px 10px 0;padding:14px 18px;margin:18px 0;box-shadow:0 1px 2px rgba(20,35,60,.06)}
+  .callout.green{border-left-color:var(--accent2)}
+  blockquote{margin:12px 0;padding:12px 18px;background:#f2faf8;border-left:4px solid var(--accent2);border-radius:0 8px 8px 0;font-style:italic;color:#274a52}
+  blockquote .who{display:block;margin-top:8px;font-style:normal;font-size:13px;color:var(--muted)}
+  .big{display:flex;gap:14px;flex-wrap:wrap;margin:16px 0}
+  .stat{flex:1 1 130px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-align:center}
+  .stat .v{font-size:30px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+  .stat .l{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .stat.good .v{color:var(--accent2)}
+  nav.toc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 18px;margin:22px 0;font-size:14px}
+  nav.toc b{display:block;margin-bottom:4px}
+  nav.toc a{margin-right:14px;white-space:nowrap;text-decoration:none}
+  .foot{margin-top:56px;padding-top:18px;border-top:3px solid var(--line);font-size:13.5px;color:var(--muted)}
+  .disclaimer{font-size:13px;color:#6b5a12;background:#fdf8e7;border:1px solid #ecd98a;border-radius:8px;padding:10px 14px;margin-top:14px}
+  @media print{header.hero{background:#0f3a5c;-webkit-print-color-adjust:exact}pre{background:#f2f4f8;color:#111}body{background:#fff}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">CDISC DDF SME call &middot; 27 Oct 2026 &middot; 5-minute intro + demo</p>
+    <h1>usdm-toolkit &mdash; what has been done so far</h1>
+    <p class="sub">An independent, open-source toolchain that reads the published USDM&nbsp;v4.0.0 deliverables and checks them against each other, generates SDTM Trial Design domains, and executes JSONata conformance rules.</p>
+    <p class="meta">
+      Repo: <a href="https://github.com/yanmingyu92/usdm-toolkit">github.com/yanmingyu92/usdm-toolkit</a>
+      &nbsp;&middot;&nbsp; Jaime Yan &middot; first DDF SME call as a volunteer
+    </p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <b>Contents</b>
+  <a href="#background">1 Background</a>
+  <a href="#toolkit">2 The toolkit</a>
+  <a href="#ct-align">3 ct-align results</a>
+  <a href="#trial-design">4 trial-design results</a>
+  <a href="#rules">5 rules results</a>
+  <a href="#community">6 Community interaction</a>
+  <a href="#run">7 Reproduce it</a>
+  <a href="#asks">8 Asks</a>
+</nav>
+
+<!-- ============ 1 BACKGROUND ============ -->
+<h2 id="background"><span class="no">1</span>Background</h2>
+<p class="lead">While onboarding as a DDF volunteer, I read the USDM v4.0.0 deliverables end to end &mdash; and on 21 Oct 2026 three new issues appeared (<a href="https://github.com/cdisc-org/DDF-RA/issues/716">#716</a>, <a href="https://github.com/cdisc-org/DDF-RA/issues/717">#717</a>, <a href="https://github.com/cdisc-org/DDF-RA/issues/718">#718</a>) reporting inconsistencies between <code>dataStructure.yml</code> and <code>USDM_CT.xlsx</code>. Instead of eyeballing them, I built a small tool to check the two files against each other mechanically &mdash; then kept going with two more modules aimed at the USDM&rarr;SDTM path described in Implementation Handbook&nbsp;1.</p>
+<ul>
+  <li><b>#716</b> &mdash; 27 attributes where the YAML carries the C-code of a concrete subclass while the CT row for the abstract class says otherwise.</li>
+  <li><b>#717</b> &mdash; <code>Procedure.procedureType</code> has no value list (free string, not comparable across studies).</li>
+  <li><b>#718</b> &mdash; <code>ExtensionAttribute</code>/<code>ExtensionClass</code> still present in <code>dataStructure.yml</code> although they were decided to be API-only (#613).</li>
+</ul>
+<p>All three were <b>independently reproduced, 100%, with a separate implementation</b> &mdash; and the checker surfaced <b>7 additional findings</b> the issues don't mention.</p>
+
+<!-- ============ 2 TOOLKIT ============ -->
+<h2 id="toolkit"><span class="no">2</span>The toolkit &mdash; three small modules</h2>
+<div class="cards">
+  <div class="card">
+    <h4>ct-align</h4>
+    <p>Cross-checks <code>dataStructure.yml</code> against <code>USDM_CT.xlsx</code>: C-codes, preferred terms, definitions, value-list/type agreement, coverage in both directions. 9 consistency rules, ~2&nbsp;seconds per run, CI-friendly exit codes.</p>
+  </div>
+  <div class="card">
+    <h4>trial-design</h4>
+    <p>Generates SDTM Trial Design domains (<code>TS/TA/TE/TV/TI</code> as CSV) from a USDM v4.0 study JSON &mdash; the USDM&rarr;SDTM path of Implementation Handbook&nbsp;1, with every path&rarr;variable mapping and assumption documented.</p>
+  </div>
+  <div class="card">
+    <h4>rules</h4>
+    <p>A small conformance-rule engine: rules are YAML files with JSONata boolean expressions. The bundled starter library is mechanically derived from the required (cardinality&nbsp;1&nbsp;/&nbsp;1..*) attributes in <code>dataStructure.yml</code> &mdash; nothing hand-invented.</p>
+  </div>
+</div>
+<div class="disclaimer">
+  <b>Disclaimer.</b> usdm-toolkit is an independent, community-driven open-source project &mdash; not developed, endorsed, or reviewed by CDISC or the DDF team, and not part of the official DDF-RA deliverables. It only <i>reads</i> the published files (pinned to tag <code>v4.0.0</code>); findings are the author's interpretation and should be verified against official sources. The USDM model and CT remain the property of CDISC under its license terms.
+</div>
+
+<!-- ============ 3 CT-ALIGN ============ -->
+<h2 id="ct-align"><span class="no">3</span>ct-align &mdash; model vs. controlled terminology (v4.0.0)</h2>
+<div class="big">
+  <div class="stat good"><div class="v">27/27</div><div class="l">#716 mismatches reproduced</div></div>
+  <div class="stat good"><div class="v">3/3</div><div class="l">issues #716&ndash;#718 confirmed</div></div>
+  <div class="stat"><div class="v">+7</div><div class="l">new findings not in the issues</div></div>
+  <div class="stat"><div class="v">263</div><div class="l">total findings, &lt;2 s per run</div></div>
+</div>
+
+<h3>Summary by rule</h3>
+<table>
+  <thead><tr><th>Rule</th><th>Severity</th><th class="num">Count</th></tr></thead>
+  <tbody>
+    <tr><td><code>CLASS_NOT_IN_CT</code></td><td><span class="chip cw">warning</span></td><td class="num">2</td></tr>
+    <tr><td><code>ATTR_CCODE_MISMATCH</code></td><td><span class="chip ce">error</span></td><td class="num">27</td></tr>
+    <tr><td><code>ATTR_TERM_MISMATCH</code></td><td><span class="chip ce">error</span></td><td class="num">27</td></tr>
+    <tr><td><code>ATTR_DEFINITION_MISMATCH</code></td><td><span class="chip ce">error</span></td><td class="num">27</td></tr>
+    <tr><td><code>CT_ATTR_NOT_IN_YAML</code></td><td><span class="chip ci">info</span></td><td class="num">172</td></tr>
+    <tr><td><code>CLASSIFICATION_WITHOUT_VALUE_LIST</code></td><td><span class="chip cw">warning</span></td><td class="num">1</td></tr>
+    <tr><td><code>VALUE_LIST_TYPE_MISMATCH</code></td><td><span class="chip cw">warning</span></td><td class="num">7</td></tr>
+    <tr><td><b>Total</b></td><td></td><td class="num"><b>263</b></td></tr>
+  </tbody>
+</table>
+
+<h3>#716 examples &mdash; every YAML code resolves to the CT row of the concrete subclass</h3>
+<table>
+  <thead><tr><th>Attribute</th><th>YAML C-code</th><th>CT C-code</th><th>YAML code is the CT row of</th></tr></thead>
+  <tbody>
+    <tr><td><code>Identifier.text</code></td><td>C215581</td><td>C215450 (row 470)</td><td><code>AdministrableProductIdentifier.text</code></td></tr>
+    <tr><td><code>PopulationDefinition.name</code></td><td>C207544</td><td>C207520 (row 399)</td><td><code>StudyCohort.name</code></td></tr>
+    <tr><td><code>StudyDesign.studyPhase</code></td><td>C215630</td><td>C48281 (row 42)</td><td><code>InterventionalStudyDesign.studyPhase</code></td></tr>
+    <tr><td><code>SyntaxTemplate.text</code></td><td>C207478</td><td>C207578 (row 285)</td><td><code>Characteristic.text</code></td></tr>
+  </tbody>
+</table>
+<p class="muted">Full 27-row table: <a href="https://github.com/yanmingyu92/usdm-toolkit/blob/main/reports/ct_align_report_2026-10-22.md">reports/ct_align_report_2026-10-22.md</a>. Zero additional C-code mismatches beyond the 27 &mdash; the check is exhaustive, not hand-written.</p>
+
+<h3>7 new findings &mdash; Code-typed attributes whose CT row says <code>Has Value List = N</code></h3>
+<table>
+  <thead><tr><th>Location</th><th>YAML type</th><th>CT Has Value List</th></tr></thead>
+  <tbody>
+    <tr><td><code>AliasCode.standardCode</code></td><td><code>#/Code</code></td><td>N</td></tr>
+    <tr><td><code>AliasCode.standardCodeAliases</code></td><td><code>#/Code</code></td><td>N</td></tr>
+    <tr><td><code>BiomedicalConcept.code</code></td><td><code>#/AliasCode</code></td><td>N</td></tr>
+    <tr><td><code>BiomedicalConceptCategory.code</code></td><td><code>#/AliasCode</code></td><td>N</td></tr>
+    <tr><td><code>BiomedicalConceptProperty.code</code></td><td><code>#/AliasCode</code></td><td>N</td></tr>
+    <tr><td><code>CommentAnnotation.codes</code></td><td><code>#/Code</code></td><td>N</td></tr>
+    <tr><td><code>ResponseCode.code</code></td><td><code>#/Code</code></td><td>N</td></tr>
+  </tbody>
+</table>
+<p class="muted">These may be intentional &mdash; flagged for the team to look at, not asserted as defects.</p>
+
+<!-- ============ 4 TRIAL-DESIGN ============ -->
+<h2 id="trial-design"><span class="no">4</span>trial-design &mdash; USDM JSON &rarr; SDTM Trial Design domains</h2>
+<p>Input: <code>complex_1.json</code> &mdash; the Lilly LY900018 / NCT03421379 nasal-glucagon Phase&nbsp;3 study from the official <code>cdisc-org/usdm</code> integration-test fixtures. One command, five domains:</p>
+<pre><span class="c"># real output, &lt;2 s, exit 0</span>
+$ python -m usdm_toolkit.cli trial-design --input data/examples/complex_1.json --out reports/demo_trial_design
+trial-design: TS=9, TA=10, TE=5, TV=7, TI=0 rows written to reports/demo_trial_design (5 files)</pre>
+<h3>TA.csv preview (Trial Arms)</h3>
+<table>
+  <thead><tr><th>STUDYID</th><th>ARMCD</th><th>ARM</th><th class="num">TAETORD</th><th>ETCD</th><th>ELEMENT</th><th>EPOCH</th></tr></thead>
+  <tbody>
+    <tr><td>LY900018</td><td>LYG</td><td>LY-G</td><td class="num">1</td><td>SCREENIN</td><td>Screening</td><td>Screening</td></tr>
+    <tr><td>LY900018</td><td>LYG</td><td>LY-G</td><td class="num">2</td><td>GLUCLY90</td><td>GLUC_LY900018</td><td>Period 1</td></tr>
+    <tr><td>LY900018</td><td>LYG</td><td>LY-G</td><td class="num">3</td><td>WASHOUT</td><td>Wash Out</td><td>Wash Out</td></tr>
+    <tr><td>LY900018</td><td>LYG</td><td>LY-G</td><td class="num">4</td><td>GLUC</td><td>GLUC</td><td>Period 2</td></tr>
+    <tr><td>LY900018</td><td>LYG</td><td>LY-G</td><td class="num">5</td><td>FOLLOWUP</td><td>Follow Up</td><td>Follow-Up</td></tr>
+    <tr><td>LY900018</td><td>GLY</td><td>G-LY</td><td class="num">1</td><td>SCREENIN</td><td>Screening</td><td>Screening</td></tr>
+    <tr><td>LY900018</td><td>GLY</td><td>G-LY</td><td class="num">2</td><td>GLUC</td><td>GLUC</td><td>Period 1</td></tr>
+    <tr><td>LY900018</td><td>GLY</td><td>G-LY</td><td class="num">3</td><td>WASHOUT</td><td>Wash Out</td><td>Wash Out</td></tr>
+    <tr><td>LY900018</td><td>GLY</td><td>G-LY</td><td class="num">4</td><td>GLUCLY90</td><td>GLUC_LY900018</td><td>Period 2</td></tr>
+    <tr><td>LY900018</td><td>GLY</td><td>G-LY</td><td class="num">5</td><td>FOLLOWUP</td><td>Follow Up</td><td>Follow-Up</td></tr>
+  </tbody>
+</table>
+<p class="muted">TI is header-only by design: <code>complex_1.json</code> carries no eligibility-criteria content. Every USDM-path&rarr;SDTM-variable mapping and each assumption is documented in <a href="https://github.com/yanmingyu92/usdm-toolkit/blob/main/docs/trial_design_mapping.md">docs/trial_design_mapping.md</a>.</p>
+
+<!-- ============ 5 RULES ============ -->
+<h2 id="rules"><span class="no">5</span>rules &mdash; JSONata conformance engine</h2>
+<p>The five starter rules are mechanically derived from the required attributes in <code>dataStructure.yml</code> (cardinality&nbsp;1 or&nbsp;1..*):</p>
+<table>
+  <thead><tr><th>Rule</th><th>Severity</th><th>Scope</th><th>Constraint</th></tr></thead>
+  <tbody>
+    <tr><td><code>USDM-REQ-001</code></td><td><span class="chip ce">error</span></td><td><code>StudyVersion</code></td><td>&ge;1 study identifier (1..*)</td></tr>
+    <tr><td><code>USDM-REQ-002</code></td><td><span class="chip ce">error</span></td><td><code>StudyVersion</code></td><td>&ge;1 study title (1..*)</td></tr>
+    <tr><td><code>USDM-REQ-003</code></td><td><span class="chip ce">error</span></td><td><code>StudyArm</code></td><td>must have a type code (1)</td></tr>
+    <tr><td><code>USDM-REQ-004</code></td><td><span class="chip ce">error</span></td><td><code>Encounter</code></td><td>non-empty name (1)</td></tr>
+    <tr><td><code>USDM-REQ-005</code></td><td><span class="chip ce">error</span></td><td><code>InterventionalStudyDesign</code></td><td>must have an intervention model code (1)</td></tr>
+  </tbody>
+</table>
+<pre><span class="c"># valid instance — 5/5 rules pass, exit 0</span>
+$ python -m usdm_toolkit.cli rules --input data/examples/complex_1.json --out reports/demo_rules.md --format md
+rules: 0 violations written to reports/demo_rules.md
+
+<span class="c"># negative control — titles emptied on purpose: the right rule fires, exit 1</span>
+$ python -m usdm_toolkit.cli rules --input reports/demo_broken.json --out reports/demo_rules_broken.md --format md
+rules: 1 violations written to reports/demo_rules_broken.md
+<span class="o">USDM-REQ-002 | error | StudyVersion | StudyVersion_1 | expression evaluated to False</span></pre>
+<p class="muted">Next step on the roadmap: import the DDF-RA CORE-style rule deliverables into the same YAML/JSONata format.</p>
+
+<!-- ============ 6 COMMUNITY ============ -->
+<h2 id="community"><span class="no">6</span>Community interaction so far</h2>
+<div class="callout green">
+  <p style="margin-top:0"><b>Verification comments posted on all three issues on 22 Oct 2026</b></p>
+  <ul style="margin-bottom:0">
+    <li><a href="https://github.com/cdisc-org/DDF-RA/issues/716#issuecomment-6353175664">#716</a> &mdash; 27/27 reproduced, full evidence table, offer to adapt the tool into a CI check</li>
+    <li><a href="https://github.com/cdisc-org/DDF-RA/issues/717#issuecomment-6353177772">#717</a> &mdash; confirmed; noted the two files are mutually consistent here, so it's a CT-design question, not a YAML/CT divergence</li>
+    <li><a href="https://github.com/cdisc-org/DDF-RA/issues/718#issuecomment-6353178142">#718</a> &mdash; confirmed (13&nbsp;+&nbsp;4 attributes, no CT entity rows); asked about the intended policy for API-only classes</li>
+  </ul>
+</div>
+<h3>Reply from the issue author (kerfors, 23 Oct)</h3>
+<blockquote>
+  &ldquo;Thanks for taking the time to reproduce this, and the other two issues (#717, #718). Getting the same results directly from dataStructure.yml and USDM_CT.xlsx, with a separate implementation and not only from an RDF rendering, makes it easier to see that these are properties of the published files themselves.
+  <span class="who">A consistency check like your ct-align run seems a useful thing to have alongside future releases. I look forward to hearing the CDISC team&rsquo;s view on the three issues.<br>&mdash; <a href="https://github.com/cdisc-org/DDF-RA/issues/716#issuecomment-6358897735">kerfors, on #716</a></span>
+</blockquote>
+<p class="muted">Maintainer (CDISC team) response on the three issues is still pending as of 27 Oct.</p>
+
+<!-- ============ 7 RUN ============ -->
+<h2 id="run"><span class="no">7</span>Reproduce it in 3 commands</h2>
+<pre><span class="c"># Python 3.10+; source files pinned to DDF-RA tag v4.0.0</span>
+git clone https://github.com/yanmingyu92/usdm-toolkit && cd usdm-toolkit
+pip install -e .
+
+<span class="c"># 1) model vs CT consistency (~2 s; exit 1 = errors found, by design for CI)</span>
+python -m usdm_toolkit.cli ct-align --yaml data/source/dataStructure.yml --ct data/source/USDM_CT.xlsx --out report.md
+
+<span class="c"># 2) USDM study JSON -&gt; SDTM Trial Design CSVs</span>
+python -m usdm_toolkit.cli trial-design --input data/examples/complex_1.json --out trial_design_out
+
+<span class="c"># 3) JSONata conformance rules</span>
+python -m usdm_toolkit.cli rules --input data/examples/complex_1.json --out rules_out.md</pre>
+<p class="muted">Tests: <code>pytest</code>. Everything is deterministic and derived from the published files &mdash; no hand-maintained finding lists.</p>
+
+<!-- ============ 8 ASKS ============ -->
+<h2 id="asks"><span class="no">8</span>Asks</h2>
+<div class="callout">
+  <ol style="margin:0">
+    <li><b>Feedback</b> &mdash; are these checks useful and correct? Anything you'd change in scope or output format?</li>
+    <li><b>Direction</b> &mdash; as a new volunteer, where would a check like this help the team most: CT alignment for future releases, the CORE-style rules, the Trial Design mapping, or something else entirely? Happy to take it on.</li>
+  </ol>
+</div>
+<p class="muted">Relevant repo docs: <a href="https://github.com/yanmingyu92/usdm-toolkit/blob/main/reports/ct_align_report_2026-10-22.md">ct-align full report</a> &middot; <a href="https://github.com/yanmingyu92/usdm-toolkit/blob/main/docs/trial_design_mapping.md">trial-design mapping</a> &middot; <a href="https://github.com/yanmingyu92/usdm-toolkit/blob/main/README.md">README / capability matrix</a></p>
+
+<div class="foot">
+  Prepared for the CDISC DDF SME call, 27 Oct 2026 &middot; Jaime Yan (<a href="https://github.com/yanmingyu92">@yanmingyu92</a>)<br>
+  All numbers on this page are real outputs of CLI runs on 22&ndash;27 Oct 2026 against DDF-RA tag <code>v4.0.0</code>. usdm-toolkit is an independent community project, not a CDISC deliverable.
+</div>
+
+</div>
+</body>
+</html>
