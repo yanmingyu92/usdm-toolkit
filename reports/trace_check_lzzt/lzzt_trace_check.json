@@ -1,0 +1,539 @@
+{
+  "generated": "2026-11-10T19:08:07Z",
+  "tool": "usdm-toolkit 0.1.0",
+  "summary": {
+    "error": 0,
+    "warning": 31,
+    "info": 6,
+    "rules_run": 22,
+    "rules_skipped": 0
+  },
+  "findings": [
+    {
+      "rule_id": "TC-SOA-002",
+      "severity": "warning",
+      "category": "Schedule of Activities",
+      "message": "HBA1C planned at Week 2, Week 4, Week 12, Week 16, Week 20, Week 24, Week 26 but no LB records at that visit",
+      "usdm_ref": "BC Hemoglobin A1C Concentration in Blood",
+      "sdtm_ref": "LBTESTCD='HBA1C'",
+      "count": 7
+    },
+    {
+      "rule_id": "TC-SV-001",
+      "severity": "warning",
+      "category": "Subject Data",
+      "message": "SV visit 'AMBUL ECG PLACEMENT' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "SV.VISIT='AMBUL ECG PLACEMENT'",
+      "count": 208
+    },
+    {
+      "rule_id": "TC-SV-001",
+      "severity": "warning",
+      "category": "Subject Data",
+      "message": "SV visit 'AMBUL ECG REMOVAL' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "SV.VISIT='AMBUL ECG REMOVAL'",
+      "count": 203
+    },
+    {
+      "rule_id": "TC-SV-001",
+      "severity": "warning",
+      "category": "Subject Data",
+      "message": "SV visit 'WEEK 14 (T)' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "SV.VISIT='WEEK 14 (T)'",
+      "count": 141
+    },
+    {
+      "rule_id": "TC-SV-001",
+      "severity": "warning",
+      "category": "Subject Data",
+      "message": "SV visit 'WEEK 22 (T)' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "SV.VISIT='WEEK 22 (T)'",
+      "count": 112
+    },
+    {
+      "rule_id": "TC-SV-001",
+      "severity": "warning",
+      "category": "Subject Data",
+      "message": "SV visit 'AE FOLLOW-UP' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "SV.VISIT='AE FOLLOW-UP'",
+      "count": 74
+    },
+    {
+      "rule_id": "TC-SV-001",
+      "severity": "warning",
+      "category": "Subject Data",
+      "message": "SV visit 'RETRIEVAL' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "SV.VISIT='RETRIEVAL'",
+      "count": 38
+    },
+    {
+      "rule_id": "TC-SV-001",
+      "severity": "warning",
+      "category": "Subject Data",
+      "message": "SV visit 'WEEK 10 (T)' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "SV.VISIT='WEEK 10 (T)'",
+      "count": 156
+    },
+    {
+      "rule_id": "TC-SV-001",
+      "severity": "warning",
+      "category": "Subject Data",
+      "message": "SV visit 'WEEK 18 (T)' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "SV.VISIT='WEEK 18 (T)'",
+      "count": 124
+    },
+    {
+      "rule_id": "TC-TA-003",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "Protocol epoch 'Treatment Two' is not used in TA.EPOCH",
+      "usdm_ref": "StudyEpoch 'Treatment Two'",
+      "sdtm_ref": "TA.EPOCH",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TA-003",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "Protocol epoch 'Treatment Three' is not used in TA.EPOCH",
+      "usdm_ref": "StudyEpoch 'Treatment Three'",
+      "sdtm_ref": "TA.EPOCH",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TA-003",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "Protocol epoch 'Follow Up' is not used in TA.EPOCH",
+      "usdm_ref": "StudyEpoch 'Follow Up'",
+      "sdtm_ref": "TA.EPOCH",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TA-004",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "Element sequence for arm 'Placebo' differs: protocol [Screening > Placebo > Follow up] vs TA [Screen > Placebo]",
+      "usdm_ref": "StudyArm 'Placebo' cells",
+      "sdtm_ref": "TA.ARM='Placebo'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TA-004",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "Element sequence for arm 'Xanomeline Low Dose' differs: protocol [Screening > Low > Follow up] vs TA [Screen > Low]",
+      "usdm_ref": "StudyArm 'Xanomeline Low Dose' cells",
+      "sdtm_ref": "TA.ARM='Xanomeline Low Dose'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TA-004",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "Element sequence for arm 'Xanomeline High Dose' differs: protocol [Screening > High - Start > High - Middle > High - End > Follow up] vs TA [Screen > High_Start > High_Middle > High_End]",
+      "usdm_ref": "StudyArm 'Xanomeline High Dose' cells",
+      "sdtm_ref": "TA.ARM='Xanomeline High Dose'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TI-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "Exclusion criterion 24: TI text differs from protocol (similarity 0.74). Protocol: 'A history within the last 5 years of a serious infectious disease including a) Neurosyphilis b) Meningitis c) Encephalit'",
+      "usdm_ref": "EligibilityCriterion EligibilityCriterion_24",
+      "sdtm_ref": "TI.IETESTCD='EXCL24'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TI-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "Exclusion criterion 25: TI text differs from protocol (similarity 0.58). Protocol: 'A history within the last 5 years of a primary or recurrent malignant disease with the exception of resected cutaneous s'",
+      "usdm_ref": "EligibilityCriterion EligibilityCriterion_25",
+      "sdtm_ref": "TI.IETESTCD='EXCL25'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TI-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "Exclusion criterion 29: TI text differs from protocol (similarity 0.31). Protocol: 'Positive syphilis screening. Positive syphilis screening. As determined by positive RPR followed up by confirmatory FTA-'",
+      "usdm_ref": "EligibilityCriterion EligibilityCriterion_29",
+      "sdtm_ref": "TI.IETESTCD='EXCL29'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TI-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "Exclusion criterion 30: TI text differs from protocol (similarity 0.43). Protocol: 'Glycosylated hemoglobin (A1C). Required only on patients with known diabetes mellitus or random blood sugar >200 on scre'",
+      "usdm_ref": "EligibilityCriterion EligibilityCriterion_30",
+      "sdtm_ref": "TI.IETESTCD='EXCL30'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TI-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "Exclusion criterion 31: TI text differs from protocol (similarity 0.65). Protocol: 'Treatment with the following medications within the specified washout periods prior to enrollment and during the study:'",
+      "usdm_ref": "EligibilityCriterion EligibilityCriterion_31",
+      "sdtm_ref": "TI.IETESTCD='EXCL31'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TS-001",
+      "severity": "warning",
+      "category": "Trial Summary",
+      "message": "TS SPONSOR 'CDISCPILOT01' does not match protocol value 'LILLY'",
+      "usdm_ref": "Sponsor organization name = 'LILLY'",
+      "sdtm_ref": "TS.TSPARMCD='SPONSOR' TSVAL='CDISCPILOT01'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TS-002",
+      "severity": "warning",
+      "category": "Trial Summary",
+      "message": "TS OBJPRIM is not a protocol primary objective (best similarity 0.14): 'To document the safety profile of the xanomeline TTS.'",
+      "usdm_ref": "StudyDesign.objectives (primary)",
+      "sdtm_ref": "TS.TSPARMCD='OBJPRIM'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TV-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "TV visit 'AMBUL ECG PLACEMENT' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "TV.VISIT='AMBUL ECG PLACEMENT'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TV-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "TV visit 'AMBUL ECG REMOVAL' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "TV.VISIT='AMBUL ECG REMOVAL'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TV-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "TV visit 'WEEK 10 (T)' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "TV.VISIT='WEEK 10 (T)'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TV-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "TV visit 'WEEK 14 (T)' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "TV.VISIT='WEEK 14 (T)'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TV-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "TV visit 'WEEK 18 (T)' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "TV.VISIT='WEEK 18 (T)'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TV-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "TV visit 'WEEK 22 (T)' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "TV.VISIT='WEEK 22 (T)'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TV-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "TV visit 'AE FOLLOW-UP' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "TV.VISIT='AE FOLLOW-UP'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TV-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "TV visit 'RETRIEVAL' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "TV.VISIT='RETRIEVAL'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TV-002",
+      "severity": "warning",
+      "category": "Trial Design",
+      "message": "TV visit 'Rash followup' is not a protocol encounter",
+      "usdm_ref": "StudyDesign.encounters",
+      "sdtm_ref": "TV.VISIT='Rash followup'",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-DM-002",
+      "severity": "info",
+      "category": "Subject Data",
+      "message": "12 subject(s) received a different arm than planned (Xan_Hi->Xan_Lo); confirm against protocol deviations and the reviewer's guide",
+      "usdm_ref": "StudyDesign.arms",
+      "sdtm_ref": "DM.ARMCD vs DM.ACTARMCD",
+      "count": 12
+    },
+    {
+      "rule_id": "TC-SE-001",
+      "severity": "info",
+      "category": "Subject Data",
+      "message": "Element matched approximately (score 0.85); confirm the labels refer to the same thing",
+      "usdm_ref": "Screening",
+      "sdtm_ref": "Screen",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-SOA-000",
+      "severity": "info",
+      "category": "Schedule of Activities",
+      "message": "10 scheduled biomedical concept(s) have no SDTM mapping and were not checked: Informed Consent (C16735); Sex (C28421); Race (C17049); Physical Examination Finding (C83119); Medical History (C83119); Alcohol Use (C81229); Caffeine Use (C201990); ECG Measurement (C62085); Concomitant Medications (C83056); ADAS-Cog (C100247)",
+      "usdm_ref": "biomedicalConcepts",
+      "sdtm_ref": "(bc map)",
+      "count": 10
+    },
+    {
+      "rule_id": "TC-TE-001",
+      "severity": "info",
+      "category": "Trial Design",
+      "message": "Element matched approximately (score 0.85); confirm the labels refer to the same thing",
+      "usdm_ref": "Screening",
+      "sdtm_ref": "Screen",
+      "count": 1
+    },
+    {
+      "rule_id": "TC-TI-002",
+      "severity": "info",
+      "category": "Trial Design",
+      "message": "13 TI criterion text(s) are abbreviations of the protocol text (IETEST is limited to 200 characters); confirm nothing material was dropped: INCL02, INCL08, EXCL12, EXCL14, EXCL16, EXCL17, EXCL18, EXCL19, EXCL20, EXCL21, EXCL22, EXCL27, EXCL28",
+      "usdm_ref": "eligibilityCriterionItems",
+      "sdtm_ref": "TI.IETEST",
+      "count": 13
+    },
+    {
+      "rule_id": "TC-TS-001",
+      "severity": "info",
+      "category": "Trial Summary",
+      "message": "TS has no REGID although the protocol defines it",
+      "usdm_ref": "Registry study identifier = 'NCT12345678'",
+      "sdtm_ref": "TS.TSPARMCD='REGID'",
+      "count": 1
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "TC-TA-001",
+      "title": "Protocol arm present in TA",
+      "category": "Trial Design",
+      "severity": "error",
+      "requires": [
+        "TA"
+      ]
+    },
+    {
+      "rule_id": "TC-TA-002",
+      "title": "TA arm defined in protocol",
+      "category": "Trial Design",
+      "severity": "error",
+      "requires": [
+        "TA"
+      ]
+    },
+    {
+      "rule_id": "TC-TA-003",
+      "title": "TA epochs match protocol epochs",
+      "category": "Trial Design",
+      "severity": "warning",
+      "requires": [
+        "TA"
+      ]
+    },
+    {
+      "rule_id": "TC-TA-004",
+      "title": "TA element sequence per arm matches protocol",
+      "category": "Trial Design",
+      "severity": "warning",
+      "requires": [
+        "TA"
+      ]
+    },
+    {
+      "rule_id": "TC-TE-001",
+      "title": "Protocol element present in TE",
+      "category": "Trial Design",
+      "severity": "warning",
+      "requires": [
+        "TE"
+      ]
+    },
+    {
+      "rule_id": "TC-TE-002",
+      "title": "TE element defined in protocol",
+      "category": "Trial Design",
+      "severity": "warning",
+      "requires": [
+        "TE"
+      ]
+    },
+    {
+      "rule_id": "TC-TV-001",
+      "title": "Protocol encounter present in TV",
+      "category": "Trial Design",
+      "severity": "warning",
+      "requires": [
+        "TV"
+      ]
+    },
+    {
+      "rule_id": "TC-TV-002",
+      "title": "TV visit defined in protocol",
+      "category": "Trial Design",
+      "severity": "warning",
+      "requires": [
+        "TV"
+      ]
+    },
+    {
+      "rule_id": "TC-TI-001",
+      "title": "Eligibility criteria correspond one-to-one with TI",
+      "category": "Trial Design",
+      "severity": "warning",
+      "requires": [
+        "TI"
+      ]
+    },
+    {
+      "rule_id": "TC-TI-002",
+      "title": "TI criterion text matches protocol text",
+      "category": "Trial Design",
+      "severity": "warning",
+      "requires": [
+        "TI"
+      ]
+    },
+    {
+      "rule_id": "TC-TS-001",
+      "title": "TS parameters match protocol values (TITLE, TPHASE, TBLIND, PLANSUB, REGID, SPONSOR)",
+      "category": "Trial Summary",
+      "severity": "warning",
+      "requires": [
+        "TS"
+      ]
+    },
+    {
+      "rule_id": "TC-TS-002",
+      "title": "TS OBJPRIM matches protocol primary objectives",
+      "category": "Trial Summary",
+      "severity": "warning",
+      "requires": [
+        "TS"
+      ]
+    },
+    {
+      "rule_id": "TC-DM-001",
+      "title": "DM planned/actual arms are protocol arms",
+      "category": "Subject Data",
+      "severity": "error",
+      "requires": [
+        "DM"
+      ]
+    },
+    {
+      "rule_id": "TC-DM-002",
+      "title": "Subjects whose actual arm differs from planned",
+      "category": "Subject Data",
+      "severity": "info",
+      "requires": [
+        "DM"
+      ]
+    },
+    {
+      "rule_id": "TC-SV-001",
+      "title": "SV scheduled visits are protocol encounters",
+      "category": "Subject Data",
+      "severity": "warning",
+      "requires": [
+        "SV"
+      ]
+    },
+    {
+      "rule_id": "TC-SV-002",
+      "title": "Protocol encounters have SV records",
+      "category": "Subject Data",
+      "severity": "warning",
+      "requires": [
+        "SV"
+      ]
+    },
+    {
+      "rule_id": "TC-SE-001",
+      "title": "SE elements are protocol elements",
+      "category": "Subject Data",
+      "severity": "warning",
+      "requires": [
+        "SE"
+      ]
+    },
+    {
+      "rule_id": "TC-EX-001",
+      "title": "EX treatments match protocol interventions",
+      "category": "Subject Data",
+      "severity": "warning",
+      "requires": [
+        "EX"
+      ]
+    },
+    {
+      "rule_id": "TC-SOA-000",
+      "title": "Scheduled BCs have an SDTM mapping",
+      "category": "Schedule of Activities",
+      "severity": "info",
+      "requires": []
+    },
+    {
+      "rule_id": "TC-SOA-001",
+      "title": "Each scheduled test has SDTM records",
+      "category": "Schedule of Activities",
+      "severity": "warning",
+      "requires": []
+    },
+    {
+      "rule_id": "TC-SOA-002",
+      "title": "Scheduled test collected at each planned visit",
+      "category": "Schedule of Activities",
+      "severity": "warning",
+      "requires": []
+    },
+    {
+      "rule_id": "TC-SOA-003",
+      "title": "Test collected at visits not in the SoA",
+      "category": "Schedule of Activities",
+      "severity": "info",
+      "requires": []
+    }
+  ],
+  "skipped": []
+}

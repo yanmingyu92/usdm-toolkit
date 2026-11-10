@@ -25,6 +25,7 @@ operate directly on the published deliverables (`dataStructure.yml`,
 | `ct-align` | `dataStructure.yml` + `USDM_CT.xlsx` | Markdown/JSON report | Consistency checker between the model export and the controlled terminology (C-codes, preferred terms, definitions, value lists, coverage gaps) |
 | `trial-design` | USDM v4.0 study JSON | `TS`/`TA`/`TE`/`TV`/`TI` CSVs | Generate SDTM Trial Design domain datasets from a USDM study definition |
 | `rules` | USDM study JSON + YAML rule library | Markdown/JSON violations report | Execute conformance rules (JSONata expressions) against a USDM JSON instance |
+| `trace-check` *(prototype)* | USDM v4.0 study JSON + SDTM folder (Dataset-JSON / CSV / XPT) | P21-style Excel, Markdown or JSON | Cross-artifact consistency: does the submitted SDTM agree with the protocol? |
 
 ## Installation
 
@@ -85,6 +86,31 @@ python -m usdm_toolkit.cli rules \
 - `--rules-dir` points at a custom rule directory; without it the bundled
   library is used.
 - Exit code is `1` when error-severity violations exist, `0` otherwise.
+
+### trace-check — protocol (USDM) ↔ SDTM consistency *(prototype)*
+
+CDISC CORE and Pinnacle 21 check each standard on its own. `trace-check`
+checks that the artifacts agree **with each other**: the protocol's arms,
+epochs, elements, encounters, eligibility criteria, objectives and Schedule of
+Activities against the submitted trial design (TA/TE/TV/TI/TS) and
+subject-level data (DM/SV/SE/EX and findings domains such as VS/LB).
+
+```bash
+python -m usdm_toolkit.cli trace-check \
+    --usdm study_usdm_v4.json \
+    --sdtm path/to/sdtm/            # *.json (Dataset-JSON 1.0/1.1), *.csv, *.xpt
+    --out reports/trace_check.xlsx  # .xlsx | .json | .md (default: Markdown to stdout)
+```
+
+- The Excel report has the familiar **Summary / Issues / Rules** layout.
+- Exit code: `1` if error findings, `2` on unreadable input, `0` otherwise.
+- `--bc-map map.yml` extends the built-in starter map from biomedical-concept
+  C-codes to SDTM `--TESTCD` (`C25298: {domain: VS, testcd: SYSBP}`).
+- XPT input needs `pandas`; Dataset-JSON and CSV need nothing extra.
+
+Rule catalogue and design notes: [`docs/trace_check.md`](docs/trace_check.md).
+A worked run on the CDISC Pilot (LZZT) study is in
+[`reports/trace_check_lzzt/`](reports/trace_check_lzzt/).
 
 ## What ct-align checks
 

@@ -60,7 +60,63 @@ def build_parser() -> argparse.ArgumentParser:
                        help="Output report path (default: stdout)")
     rules.add_argument("--format", choices=["md", "json"], default="md",
                        help="Report format (default: md)")
+
+    trace = sub.add_parser(
+        "trace-check",
+        help="Check a USDM protocol against SDTM datasets for cross-artifact "
+             "consistency",
+    )
+    trace.add_argument("--usdm", dest="usdm_path", required=True,
+                       help="Path to a USDM v4 JSON study file")
+    trace.add_argument("--sdtm", dest="sdtm_dir", required=True,
+                       help="Folder of SDTM datasets (Dataset-JSON, CSV or XPT)")
+    trace.add_argument("--bc-map", dest="bc_map_path", default=None,
+                       help="YAML map of BC C-code -> {domain, testcd} "
+                            "(added to the built-in starter map)")
+    trace.add_argument("--out", dest="out_path", default=None,
+                       help="Output path; .xlsx/.json/.md picks the format "
+                            "(default: Markdown to stdout)")
     return parser
+
+
+def _run_trace_check(args: argparse.Namespace) -> int:
+    from .trace_check import run_trace_check
+    from .trace_check import report as trace_report
+    from .trace_check.bc_map import load_bc_map
+    from .trace_check.loaders import scan_sdtm_dir
+
+    try:
+        with open(args.usdm_path, encoding="utf-8") as fh:
+            usdm = json.load(fh)
+        if not isinstance(usdm, dict):
+            raise ValueError(f"{args.usdm_path}: not a USDM JSON object")
+        sdtm, problems = scan_sdtm_dir(args.sdtm_dir)
+        bc_map = load_bc_map(args.bc_map_path) if args.bc_map_path else None
+    except (OSError, ValueError) as exc:  # JSONDecodeError is a ValueError
+        print(f"trace-check: {exc}", file=sys.stderr)
+        return 2
+    for problem in problems:
+        print(f"trace-check: {problem}", file=sys.stderr)
+
+    report = run_trace_check(usdm, sdtm, bc_map=bc_map)
+    sources = {"usdm_source": args.usdm_path, "sdtm_source": args.sdtm_dir}
+    out = args.out_path
+    if out and out.lower().endswith(".xlsx"):
+        trace_report.write_xlsx(report, out, **sources)
+    else:
+        text = (trace_report.render_json(report)
+                if out and out.lower().endswith(".json")
+                else trace_report.render_markdown(report, **sources))
+        if out:
+            with open(out, "w", encoding="utf-8") as fh:
+                fh.write(text)
+        else:
+            print(text)
+    s = report.summary()
+    print(f"trace-check: {s['error']} error(s), {s['warning']} warning(s), "
+          f"{s['info']} info; {len(sdtm)} dataset(s) loaded"
+          + (f"; report written to {out}" if out else ""), file=sys.stderr)
+    return 1 if report.error_count else 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -116,6 +172,9 @@ def main(argv: list[str] | None = None) -> int:
             print(output)
         errors = sum(1 for v in violations if v.severity == "error")
         return 1 if errors else 0
+
+    if args.command == "trace-check":
+        return _run_trace_check(args)
 
     return 2
 
