@@ -16,20 +16,32 @@ standard; verify them against your SDTM IG conformance requirements.
 | `STUDYID` | Sponsor-issued `StudyIdentifier.text`: the identifier whose scope organisation's type decode does **not** contain "Registry"; falls back to the first identifier, then `study.name` **[ASSUMPTION]** |
 | Code decoding | USDM `Code.decode`; for `AliasCode` the `standardCode.decode` is used |
 | Sequence ordering | `StudyEpoch` / `Encounter` order follows the `previousId`/`nextId` linked list; unlinked nodes are appended in file order |
+| Stated codes | USDM v4.0 has no attribute for `ARMCD`, `ETCD` or `VISITNUM`. When a `StudyArm`, `StudyElement` or `Encounter` carries an `ExtensionAttribute` with a non-empty `valueString` whose `url` ends in `/ARMCD`, `/ETCD` or `/VISITNUM` (last path segment, case-insensitive; the namespace is not checked), that value is used; otherwise the value is derived as described below |
 
 ## TS — Trial Summary
 
+`TSPARMCD` / `TSPARM` are terms of the SDTM CT codelists TSPARMCD (C66738)
+and TSPARM (C67152), checked against CDISC SDTM Controlled Terminology
+2026-09-25 (NCI EVS). `STUDYID` is a column of every row, not a parameter.
+A parameter with no value in the study is omitted. `TSSEQ` numbers the
+values within one `TSPARMCD` (1, 2, …); with one value per parameter every
+row has `TSSEQ = 1`.
+
+`TSVAL` is the USDM decode, i.e. the NCI preferred term (for example
+"Double Blind Study"), not the CDISC submission value ("DOUBLE BLIND").
+Mapping one to the other needs the CT itself and is not done
+**[ASSUMPTION]**.
+
 | TSPARMCD | TSPARM | USDM source path |
 | --- | --- | --- |
-| STUDYID | Study Identifier | See "General" above |
 | TITLE | Trial Title | `versions[0].titles[*].text` where `type.decode` contains "Official", else "Brief", else first title **[ASSUMPTION]** |
-| SPONSOR | Sponsor Name | `versions[0].organizations[*].name` of the organisation that issued STUDYID |
+| SPONSOR | Clinical Study Sponsor | `versions[0].organizations[*].name` of the organisation that issued STUDYID |
 | REGID | Registry Identifier | `StudyIdentifier.text` whose scope organisation type decode contains "Registry" (e.g. ClinicalTrials.gov) **[ASSUMPTION]** |
-| PHASE | Trial Phase Classification | `studyDesigns[0].studyPhase.standardCode.decode` |
+| TPHASE | Trial Phase Classification | `studyDesigns[0].studyPhase.standardCode.decode` |
 | INTMODEL | Intervention Model | `studyDesigns[0].model.decode` |
-| BLIND | Trial Blinding Schema | `studyDesigns[0].blindingSchema.standardCode.decode` |
+| TBLIND | Trial Blinding Schema | `studyDesigns[0].blindingSchema.standardCode.decode` |
 | STYPE | Study Type | `studyDesigns[0].studyType.decode` |
-| ENROLL | Planned Enrollment | `studyDesigns[0].population.plannedEnrollmentNumber.value` |
+| PLANSUB | Planned Number of Subjects | `studyDesigns[0].population.plannedEnrollmentNumber.value` |
 
 ## TA — Trial Arms
 
@@ -37,10 +49,10 @@ One row per (arm, epoch, element) found in the `studyCells` matrix.
 
 | SDTM variable | USDM source path | Note |
 | --- | --- | --- |
-| ARMCD | derived from `arms[*].name` | Uppercased alphanumeric, ≤8 chars **[ASSUMPTION]** |
+| ARMCD | stated code (see "General"), else derived from `arms[*].name` | Derivation: uppercased alphanumeric, ≤8 chars, numeric suffix on collision (also with stated codes) **[ASSUMPTION]** |
 | ARM | `arms[*].name` | |
 | TAETORD | running order per arm | Elements in epoch-chain order, then `StudyCell.elementIds` order |
-| ETCD | derived from `elements[*].name` | Uppercased alphanumeric, ≤8 chars **[ASSUMPTION]** |
+| ETCD | stated code (see "General"), else derived from `elements[*].name` | Derivation: uppercased alphanumeric, ≤8 chars, numeric suffix on collision (also with stated codes) **[ASSUMPTION]** |
 | ELEMENT | `elements[*].name` | |
 | EPOCH | `epochs[*].name` | Epoch of the `StudyCell` |
 
@@ -48,7 +60,7 @@ One row per (arm, epoch, element) found in the `studyCells` matrix.
 
 | SDTM variable | USDM source path | Note |
 | --- | --- | --- |
-| ETCD | derived from `elements[*].name` | Same derivation as TA **[ASSUMPTION]** |
+| ETCD | as in TA | Same codes as TA **[ASSUMPTION]** |
 | ELEMENT | `elements[*].name` | |
 | TESTRL | `elements[*].transitionStartRule.text` | |
 | TEENRL | `elements[*].transitionEndRule.text` | |
@@ -57,7 +69,7 @@ One row per (arm, epoch, element) found in the `studyCells` matrix.
 
 | SDTM variable | USDM source path | Note |
 | --- | --- | --- |
-| VISITNUM | position (1-based) of the `Encounter` in the `previousId`/`nextId` chain | |
+| VISITNUM | stated `VISITNUM` (see "General"), numeric, integers written without ".0"; else position (1-based) of the `Encounter` in the `previousId`/`nextId` chain | A stated value that is not a number falls back to the position |
 | VISIT | `encounters[*].name` | |
 
 `VISITDY` is not populated: USDM timing values live on schedule-timeline

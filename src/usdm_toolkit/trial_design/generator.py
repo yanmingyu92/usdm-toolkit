@@ -21,6 +21,23 @@ DOMAIN_COLUMNS: dict[str, list[str]] = {
     "TI": ["STUDYID", "DOMAIN", "IETESTCD", "IETEST", "IECAT"],
 }
 
+# TS parameters written, in output order: (TSPARMCD, TSPARM).
+# Source: CDISC SDTM Controlled Terminology 2026-09-25 (NCI EVS), codelists
+# TSPARMCD (C66738) and TSPARM (C67152). NCI codes of the terms: TITLE C49802,
+# SPONSOR C70793, REGID C98714, TPHASE C48281, INTMODEL C98746,
+# TBLIND C49658, STYPE C142175, PLANSUB C49692.
+# STUDYID is a column of every TS row, not a TS parameter.
+TS_PARAMETERS: list[tuple[str, str]] = [
+    ("TITLE", "Trial Title"),
+    ("SPONSOR", "Clinical Study Sponsor"),
+    ("REGID", "Registry Identifier"),
+    ("TPHASE", "Trial Phase Classification"),
+    ("INTMODEL", "Intervention Model"),
+    ("TBLIND", "Trial Blinding Schema"),
+    ("STYPE", "Study Type"),
+    ("PLANSUB", "Planned Number of Subjects"),
+]
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -38,7 +55,8 @@ def _decode(code: Any) -> str:
 def _short_code(name: str, used: set[str], maxlen: int = 8) -> str:
     """Derive an SDTM short code (<=8 chars, uppercase alnum) from a name.
 
-    ASSUMPTION: USDM carries no ARMCD/ETCD equivalent, so the short code is
+    ASSUMPTION: USDM carries no ARMCD/ETCD equivalent, so unless the study
+    states one as an extension attribute (see ``_ext``) the short code is
     derived from the name (uppercased, non-alphanumeric stripped, truncated).
     Collisions are resolved by appending a numeric suffix.
     """
@@ -50,6 +68,22 @@ def _short_code(name: str, used: set[str], maxlen: int = 8) -> str:
         code = f"{base[: maxlen - len(str(n))]}{n}"
     used.add(code)
     return code
+
+
+def _ext(node: dict, name: str) -> str:
+    """Return the value of the node's extension attribute ``name``, or "".
+
+    USDM v4.0 has no attribute for ARMCD, ETCD or VISITNUM. A study
+    definition may carry the values the protocol states as an
+    ``ExtensionAttribute`` (``valueString``) whose ``url`` ends with
+    ``/ARMCD``, ``/ETCD`` or ``/VISITNUM`` (only the last path segment is
+    matched, case-insensitively). They are used when present; the
+    derivation otherwise.
+    """
+    for ext in node.get("extensionAttributes") or []:
+        if str(ext.get("url", "")).rstrip("/").upper().endswith("/" + name) and ext.get("valueString"):
+            return str(ext["valueString"])
+    return ""
 
 
 def _chain(nodes: list[dict]) -> list[dict]:
@@ -125,23 +159,30 @@ def _build_ts(study: dict, version: dict, design: dict, studyid: str) -> list[di
     population = design.get("population") or {}
     enrollment = (population.get("plannedEnrollmentNumber") or {}).get("value")
 
-    parms = [
-        ("STUDYID", "Study Identifier", studyid),
-        ("TITLE", "Trial Title", title),
-        ("SPONSOR", "Sponsor Name", sponsor),
-        ("REGID", "Registry Identifier", registry_id),
-        ("PHASE", "Trial Phase Classification", _decode(design.get("studyPhase"))),
-        ("INTMODEL", "Intervention Model", _decode(design.get("model"))),
-        ("BLIND", "Trial Blinding Schema", _decode(design.get("blindingSchema"))),
-        ("STYPE", "Study Type", _decode(design.get("studyType"))),
-        ("ENROLL", "Planned Enrollment", "" if enrollment is None else str(int(enrollment))),
-    ]
-    return [
-        {"STUDYID": studyid, "DOMAIN": "TS", "TSSEQ": i + 1,
-         "TSPARMCD": cd, "TSPARM": nm, "TSVAL": val}
-        for i, (cd, nm, val) in enumerate(parms)
-        if val != ""
-    ]
+    values = {
+        "TITLE": title,
+        "SPONSOR": sponsor,
+        "REGID": registry_id,
+        "TPHASE": _decode(design.get("studyPhase")),
+        "INTMODEL": _decode(design.get("model")),
+        "TBLIND": _decode(design.get("blindingSchema")),
+        "STYPE": _decode(design.get("studyType")),
+        "PLANSUB": "" if enrollment is None else str(int(enrollment)),
+    }
+    # ASSUMPTION: TSVAL is the USDM decode, i.e. the NCI preferred term
+    # (e.g. "Double Blind Study"), not the CDISC submission value
+    # ("DOUBLE BLIND"); mapping one to the other needs the CT itself.
+    rows: list[dict] = []
+    seq: dict[str, int] = {}
+    for cd, nm in TS_PARAMETERS:
+        val = values[cd]
+        if val == "":
+            continue
+        # TSSEQ numbers the values of one parameter (1, 2, ... per TSPARMCD).
+        seq[cd] = seq.get(cd, 0) + 1
+        rows.append({"STUDYID": studyid, "DOMAIN": "TS", "TSSEQ": seq[cd],
+                     "TSPARMCD": cd, "TSPARM": nm, "TSVAL": val})
+    return rows
 
 
 def _build_ta(design: dict, studyid: str) -> list[dict]:
@@ -150,13 +191,14 @@ def _build_ta(design: dict, studyid: str) -> list[dict]:
              for c in design.get("studyCells", [])}
     elements = {e.get("id"): e for e in design.get("elements", [])}
     etcd_used: set[str] = set()
-    etcd = {eid: _short_code(e.get("name", ""), etcd_used)
+    etcd_used.update(_ext(e, "ETCD") for e in elements.values() if _ext(e, "ETCD"))
+    etcd = {eid: _ext(e, "ETCD") or _short_code(e.get("name", ""), etcd_used)
             for eid, e in elements.items()}
 
     rows: list[dict] = []
-    armcd_used: set[str] = set()
+    armcd_used: set[str] = {_ext(a, "ARMCD") for a in design.get("arms", []) if _ext(a, "ARMCD")}
     for arm in design.get("arms", []):
-        armcd = _short_code(arm.get("name", ""), armcd_used)
+        armcd = _ext(arm, "ARMCD") or _short_code(arm.get("name", ""), armcd_used)
         order = 0
         for epoch in epochs:
             cell = cells.get((arm.get("id"), epoch.get("id")))
@@ -178,14 +220,14 @@ def _build_ta(design: dict, studyid: str) -> list[dict]:
 
 
 def _build_te(design: dict, studyid: str) -> list[dict]:
-    used: set[str] = set()
+    used: set[str] = {_ext(e, "ETCD") for e in design.get("elements", []) if _ext(e, "ETCD")}
     rows = []
     for element in design.get("elements", []):
         start = (element.get("transitionStartRule") or {}).get("text") or ""
         end = (element.get("transitionEndRule") or {}).get("text") or ""
         rows.append({
             "STUDYID": studyid, "DOMAIN": "TE",
-            "ETCD": _short_code(element.get("name", ""), used),
+            "ETCD": _ext(element, "ETCD") or _short_code(element.get("name", ""), used),
             "ELEMENT": element.get("name") or "",
             "TESTRL": start, "TEENRL": end,
         })
@@ -193,11 +235,18 @@ def _build_te(design: dict, studyid: str) -> list[dict]:
 
 
 def _build_tv(design: dict, studyid: str) -> list[dict]:
-    return [
-        {"STUDYID": studyid, "DOMAIN": "TV", "VISITNUM": i + 1,
-         "VISIT": enc.get("name") or ""}
-        for i, enc in enumerate(_chain(design.get("encounters", [])))
-    ]
+    rows = []
+    for i, enc in enumerate(_chain(design.get("encounters", []))):
+        stated = _ext(enc, "VISITNUM")
+        try:
+            visitnum = float(stated) if stated else i + 1
+        except ValueError:
+            visitnum = i + 1
+        if isinstance(visitnum, float) and visitnum.is_integer():
+            visitnum = int(visitnum)
+        rows.append({"STUDYID": studyid, "DOMAIN": "TV", "VISITNUM": visitnum,
+                     "VISIT": enc.get("name") or ""})
+    return rows
 
 
 def _build_ti(version: dict, design: dict, studyid: str) -> list[dict]:
