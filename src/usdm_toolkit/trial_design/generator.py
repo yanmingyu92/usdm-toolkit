@@ -132,9 +132,12 @@ def _study_id(version: dict, study: dict) -> str:
     return study.get("name") or "UNKNOWN"
 
 
-def _build_ts(study: dict, version: dict, design: dict, studyid: str) -> list[dict]:
+def _build_ts(study: dict, version: dict, design: dict,
+              studyid: str) -> tuple[list[dict], list[dict]]:
     orgs = {o.get("id"): o for o in version.get("organizations", [])}
     sponsor, registry_id = "", ""
+    sponsor_org: dict = {}
+    registry_ident: dict = {}
     for ident in version.get("studyIdentifiers", []):
         org = orgs.get(ident.get("scopeId"), {})
         if not org:
@@ -142,23 +145,29 @@ def _build_ts(study: dict, version: dict, design: dict, studyid: str) -> list[di
         if _is_registry(org):
             if not registry_id:
                 registry_id = ident.get("text") or ""
+                registry_ident = ident
         elif not sponsor:
             sponsor = org.get("name") or ""
+            sponsor_org = org
 
     titles = version.get("titles", [])
     title = ""
+    title_node: dict = {}
     for want in ("official", "brief"):
         for t in titles:
             if want in _decode(t.get("type")).lower():
                 title = t.get("text") or ""
+                title_node = t
                 break
         if title:
             break
     if not title and titles:
         title = titles[0].get("text") or ""
+        title_node = titles[0]
 
     population = design.get("population") or {}
-    enrollment = (population.get("plannedEnrollmentNumber") or {}).get("value")
+    quantity = population.get("plannedEnrollmentNumber") or {}
+    enrollment = quantity.get("value")
 
     values = {
         "TITLE": title,
@@ -173,7 +182,24 @@ def _build_ts(study: dict, version: dict, design: dict, studyid: str) -> list[di
     # ASSUMPTION: TSVAL is the USDM decode, i.e. the NCI preferred term
     # (e.g. "Double Blind Study"), not the CDISC submission value
     # ("DOUBLE BLIND"); mapping one to the other needs the CT itself.
+    def code_source(attr: str) -> tuple[dict, str]:
+        node = design.get(attr)
+        return (node if isinstance(node, dict) else {}), f"{design.get('id')}.{attr}"
+
+    # Per parameter: (the instance that holds the value, "<owner id>.<attribute>").
+    sources = {
+        "TITLE": (title_node, f"{title_node.get('id')}.text"),
+        "SPONSOR": (sponsor_org, f"{sponsor_org.get('id')}.name"),
+        "REGID": (registry_ident, f"{registry_ident.get('id')}.text"),
+        "TPHASE": code_source("studyPhase"),
+        "INTMODEL": code_source("model"),
+        "TBLIND": code_source("blindingSchema"),
+        "STYPE": code_source("studyType"),
+        "PLANSUB": (quantity, f"{population.get('id')}.plannedEnrollmentNumber"),
+    }
+
     rows: list[dict] = []
+    srcs: list[dict] = []
     seq: dict[str, int] = {}
     for cd, nm in TS_PARAMETERS:
         val = values[cd]
@@ -183,10 +209,12 @@ def _build_ts(study: dict, version: dict, design: dict, studyid: str) -> list[di
         seq[cd] = seq.get(cd, 0) + 1
         rows.append({"STUDYID": studyid, "DOMAIN": "TS", "TSSEQ": seq[cd],
                      "TSPARMCD": cd, "TSPARM": nm, "TSVAL": val})
-    return rows
+        node, attribute = sources[cd]
+        srcs.append({"usdm_ids": [node.get("id")], "usdm_attribute": attribute})
+    return rows, srcs
 
 
-def _build_ta(design: dict, studyid: str) -> list[dict]:
+def _build_ta(design: dict, studyid: str) -> tuple[list[dict], list[dict]]:
     epochs = _chain(design.get("epochs", []))
     cells = {(c.get("armId"), c.get("epochId")): c
              for c in design.get("studyCells", [])}
@@ -197,6 +225,7 @@ def _build_ta(design: dict, studyid: str) -> list[dict]:
             for eid, e in elements.items()}
 
     rows: list[dict] = []
+    srcs: list[dict] = []
     armcd_used: set[str] = {_ext(a, "ARMCD") for a in design.get("arms", []) if _ext(a, "ARMCD")}
     for arm in design.get("arms", []):
         armcd = _ext(arm, "ARMCD") or _short_code(arm.get("name", ""), armcd_used)
@@ -217,12 +246,15 @@ def _build_ta(design: dict, studyid: str) -> list[dict]:
                     "ETCD": etcd[eid], "ELEMENT": element.get("name") or "",
                     "EPOCH": epoch.get("name") or "",
                 })
-    return rows
+                srcs.append({"usdm_ids": [arm.get("id"), epoch.get("id"),
+                                          cell.get("id"), eid]})
+    return rows, srcs
 
 
-def _build_te(design: dict, studyid: str) -> list[dict]:
+def _build_te(design: dict, studyid: str) -> tuple[list[dict], list[dict]]:
     used: set[str] = {_ext(e, "ETCD") for e in design.get("elements", []) if _ext(e, "ETCD")}
-    rows = []
+    rows: list[dict] = []
+    srcs: list[dict] = []
     for element in design.get("elements", []):
         start = (element.get("transitionStartRule") or {}).get("text") or ""
         end = (element.get("transitionEndRule") or {}).get("text") or ""
@@ -232,11 +264,13 @@ def _build_te(design: dict, studyid: str) -> list[dict]:
             "ELEMENT": element.get("name") or "",
             "TESTRL": start, "TEENRL": end,
         })
-    return rows
+        srcs.append({"usdm_ids": [element.get("id")]})
+    return rows, srcs
 
 
-def _build_tv(design: dict, studyid: str) -> list[dict]:
-    rows = []
+def _build_tv(design: dict, studyid: str) -> tuple[list[dict], list[dict]]:
+    rows: list[dict] = []
+    srcs: list[dict] = []
     for i, enc in enumerate(_chain(design.get("encounters", []))):
         stated = _ext(enc, "VISITNUM")
         try:
@@ -249,12 +283,15 @@ def _build_tv(design: dict, studyid: str) -> list[dict]:
             visitnum = int(visitnum)
         rows.append({"STUDYID": studyid, "DOMAIN": "TV", "VISITNUM": visitnum,
                      "VISIT": enc.get("name") or ""})
-    return rows
+        srcs.append({"usdm_ids": [enc.get("id")]})
+    return rows, srcs
 
 
-def _build_ti(version: dict, design: dict, studyid: str) -> list[dict]:
+def _build_ti(version: dict, design: dict,
+              studyid: str) -> tuple[list[dict], list[dict]]:
     items = {it.get("id"): it for it in version.get("eligibilityCriterionItems", [])}
-    rows = []
+    rows: list[dict] = []
+    srcs: list[dict] = []
     for crit in design.get("eligibilityCriteria", []):
         cat_decode = _decode(crit.get("category")).upper()
         # ASSUMPTION: the inclusion/exclusion split is taken from the CT decode
@@ -269,7 +306,42 @@ def _build_ti(version: dict, design: dict, studyid: str) -> list[dict]:
             "STUDYID": studyid, "DOMAIN": "TI",
             "IETESTCD": ietestcd, "IETEST": ietest, "IECAT": iecat,
         })
-    return rows
+        ids = [crit.get("id")]
+        if item:
+            ids.append(item.get("id"))
+        srcs.append({"usdm_ids": ids})
+    return rows, srcs
+
+
+def _id_counts(node: Any, counts: dict[str, int] | None = None) -> dict[str, int]:
+    """Count how often each ``id`` occurs on a USDM instance in the document."""
+    counts = {} if counts is None else counts
+    if isinstance(node, dict):
+        ident = node.get("id")
+        if isinstance(ident, str) and ident and "instanceType" in node:
+            counts[ident] = counts.get(ident, 0) + 1
+        for value in node.values():
+            _id_counts(value, counts)
+    elif isinstance(node, list):
+        for value in node:
+            _id_counts(value, counts)
+    return counts
+
+
+def _settle(src: dict, counts: dict[str, int]) -> dict:
+    """Keep a row's ids only if each one names exactly one instance.
+
+    A missing id, or an id that more than one instance in the document
+    carries, does not identify a source: the row then gets no ids (and, for
+    TS, no attribute) rather than a guess.
+    """
+    ids = src["usdm_ids"]
+    if ids and all(isinstance(i, str) and counts.get(i) == 1 for i in ids):
+        return src
+    settled = {**src, "usdm_ids": []}
+    if "usdm_attribute" in settled:
+        settled["usdm_attribute"] = None
+    return settled
 
 
 # ---------------------------------------------------------------------------
@@ -285,6 +357,32 @@ def generate_domains(usdm: dict) -> dict[str, list[dict]]:
     ASSUMPTION: only the first study version and its first study design are
     converted (single-design studies are the common DDF case).
     """
+    return generate_domains_with_sources(usdm)[0]
+
+
+def generate_domains_with_sources(
+    usdm: dict,
+) -> tuple[dict[str, list[dict]], dict[str, list[dict]]]:
+    """Like ``generate_domains``, plus the USDM instances each row came from.
+
+    Returns ``(domains, sources)``. ``domains`` is exactly what
+    ``generate_domains`` returns. ``sources`` has the same keys, and
+    ``sources[domain][i]`` belongs to ``domains[domain][i]``:
+
+    - every entry has ``usdm_ids``, a list of USDM instance ids recorded
+      while the row is built (never matched afterwards by name or value):
+      TA ``[arm, epoch, cell, element]``; TE ``[element]``;
+      TV ``[encounter]``; TI ``[criterion, criterion item]`` (the item only
+      when the criterion references one that exists); TS ``[instance that
+      holds the value]`` (StudyTitle, Organization, StudyIdentifier, the
+      Code/AliasCode, or the Quantity);
+    - TS entries also have ``usdm_attribute``, ``"<owner id>.<attribute>"``,
+      e.g. ``"InterventionalStudyDesign_1.studyPhase"``.
+
+    A row whose source has no id, or an id that more than one instance in
+    the document carries, gets ``usdm_ids == []`` (and, for TS,
+    ``usdm_attribute is None``).
+    """
     study = usdm.get("study", {})
     versions = study.get("versions") or [{}]
     version = versions[0]
@@ -292,13 +390,18 @@ def generate_domains(usdm: dict) -> dict[str, list[dict]]:
     design = designs[0]
 
     studyid = _study_id(version, study)
-    return {
+    built = {
         "TS": _build_ts(study, version, design, studyid),
         "TA": _build_ta(design, studyid),
         "TE": _build_te(design, studyid),
         "TV": _build_tv(design, studyid),
         "TI": _build_ti(version, design, studyid),
     }
+    counts = _id_counts(usdm)
+    domains = {d: rows for d, (rows, _) in built.items()}
+    sources = {d: [_settle(s, counts) for s in srcs]
+               for d, (_, srcs) in built.items()}
+    return domains, sources
 
 
 def write_domains(domains: dict[str, list[dict]], out_dir: str | Path) -> list[Path]:
