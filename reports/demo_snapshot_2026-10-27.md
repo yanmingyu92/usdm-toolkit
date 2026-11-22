@@ -7,7 +7,7 @@
 > 生成命令（全部实测通过）：
 >
 > ```bash
-> cd "C:/Users/JaimeYan/OneDrive - Kardigan/personal_testing/clinivista_docker/usdm-toolkit"
+> cd usdm-toolkit   # repository root
 > source .venv/Scripts/activate
 > python -m usdm_toolkit.cli ct-align --yaml data/source/dataStructure.yml --ct data/source/USDM_CT.xlsx --out reports/demo_ct_align.md --format md
 > python -m usdm_toolkit.cli trial-design --input data/examples/complex_1.json --out reports/demo_trial_design
