@@ -304,6 +304,7 @@ class TestStatedCodes:
         usdm = _fixture()
         enc = usdm["study"]["versions"][0]["studyDesigns"][0]["encounters"]
         enc[0]["extensionAttributes"] = [_ext_attr("VISITNUM", "Day 1", 0)]
+        enc[1]["extensionAttributes"] = [_ext_attr("VISITNUM", "nan", 1)]
         tv = generate_domains(usdm)["TV"]
         assert [r["VISITNUM"] for r in tv] == [1, 2]
 

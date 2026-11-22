@@ -9,6 +9,7 @@ assumptions are flagged in code comments with ``ASSUMPTION:``.
 from __future__ import annotations
 
 import csv
+import math
 import re
 from pathlib import Path
 from typing import Any
@@ -241,6 +242,8 @@ def _build_tv(design: dict, studyid: str) -> list[dict]:
         try:
             visitnum = float(stated) if stated else i + 1
         except ValueError:
+            visitnum = i + 1
+        if not math.isfinite(visitnum):  # "nan", "inf"
             visitnum = i + 1
         if isinstance(visitnum, float) and visitnum.is_integer():
             visitnum = int(visitnum)
