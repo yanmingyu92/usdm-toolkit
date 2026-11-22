@@ -1,10 +1,9 @@
 STUDYID,DOMAIN,TSSEQ,TSPARMCD,TSPARM,TSVAL
-AP1234,TS,1,STUDYID,Study Identifier,AP1234
-AP1234,TS,2,TITLE,Trial Title,Something Very Official
-AP1234,TS,3,SPONSOR,Sponsor Name,ACME
-AP1234,TS,4,REGID,Registry Identifier,NCT12345678
-AP1234,TS,5,PHASE,Trial Phase Classification,Phase III Trial
-AP1234,TS,6,INTMODEL,Intervention Model,Parallel Study
-AP1234,TS,7,BLIND,Trial Blinding Schema,Open Label Study
-AP1234,TS,8,STYPE,Study Type,Interventional Study
-AP1234,TS,9,ENROLL,Planned Enrollment,120
+AP1234,TS,1,TITLE,Trial Title,Something Very Official
+AP1234,TS,1,SPONSOR,Clinical Study Sponsor,ACME
+AP1234,TS,1,REGID,Registry Identifier,NCT12345678
+AP1234,TS,1,TPHASE,Trial Phase Classification,Phase III Trial
+AP1234,TS,1,INTMODEL,Intervention Model,Parallel Study
+AP1234,TS,1,TBLIND,Trial Blinding Schema,Open Label Study
+AP1234,TS,1,STYPE,Study Type,Interventional Study
+AP1234,TS,1,PLANSUB,Planned Number of Subjects,120

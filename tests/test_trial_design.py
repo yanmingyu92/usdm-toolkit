@@ -164,13 +164,38 @@ class TestSyntheticFixture:
         assert ts["TITLE"] == "Synthetic Study"
         assert ts["SPONSOR"] == "ACME"
         assert ts["REGID"] == "NCT00000001"
-        assert ts["PHASE"] == "Phase II Trial"          # AliasCode -> standardCode
+        assert ts["TPHASE"] == "Phase II Trial"         # AliasCode -> standardCode
         assert ts["INTMODEL"] == "Parallel Study"
-        assert ts["BLIND"] == "Double Blind Study"
+        assert ts["TBLIND"] == "Double Blind Study"
         assert ts["STYPE"] == "Interventional Study"
-        assert ts["ENROLL"] == "60"
-        seqs = [r["TSSEQ"] for r in domains["TS"]]
-        assert seqs == list(range(1, len(seqs) + 1))
+        assert ts["PLANSUB"] == "60"
+
+    def test_ts_parameter_codes_are_sdtm_ct(self, domains):
+        # TSPARMCD/TSPARM terms of SDTM CT 2026-09-25 (C66738/C67152).
+        assert [(r["TSPARMCD"], r["TSPARM"]) for r in domains["TS"]] == [
+            ("TITLE", "Trial Title"),
+            ("SPONSOR", "Clinical Study Sponsor"),
+            ("REGID", "Registry Identifier"),
+            ("TPHASE", "Trial Phase Classification"),
+            ("INTMODEL", "Intervention Model"),
+            ("TBLIND", "Trial Blinding Schema"),
+            ("STYPE", "Study Type"),
+            ("PLANSUB", "Planned Number of Subjects"),
+        ]
+
+    def test_ts_has_no_studyid_parameter(self, domains):
+        assert "STUDYID" not in {r["TSPARMCD"] for r in domains["TS"]}
+
+    def test_tsseq_counts_per_parameter(self):
+        usdm = _fixture()
+        version = usdm["study"]["versions"][0]
+        version["organizations"] = [  # no registry -> REGID is empty
+            o for o in version["organizations"] if o["id"] != "Organization_1"]
+        version["studyIdentifiers"] = version["studyIdentifiers"][1:]
+        ts = generate_domains(usdm)["TS"]
+        assert "REGID" not in {r["TSPARMCD"] for r in ts}
+        # One value per parameter: every TSSEQ is 1, no gap left by REGID.
+        assert [r["TSSEQ"] for r in ts] == [1] * len(ts)
 
     def test_ta_rows(self, domains):
         ta = domains["TA"]
@@ -207,6 +232,81 @@ class TestSyntheticFixture:
             rows = list(csv.DictReader(fh))
         assert len(rows) == 4
         assert rows[0]["DOMAIN"] == "TA"
+
+
+EXT = "https://example.org/usdm/ext/sdtm/"
+
+
+def _ext_attr(name: str, value: str, n: int) -> dict:
+    return {"id": f"ExtensionAttribute_{name}_{n}", "url": EXT + name,
+            "valueString": value, "instanceType": "ExtensionAttribute"}
+
+
+def _with_codes() -> dict:
+    """The fixture with ARMCD/ETCD/VISITNUM stated as extension attributes."""
+    usdm = _fixture()
+    design = usdm["study"]["versions"][0]["studyDesigns"][0]
+    for n, (arm, code) in enumerate(zip(design["arms"], ["Pbo", "Trt_Hi"])):
+        arm["extensionAttributes"] = [_ext_attr("ARMCD", code, n)]
+    for n, (el, code) in enumerate(zip(design["elements"], ["SCRN", "PBO", "DRUG"])):
+        el["extensionAttributes"] = [_ext_attr("ETCD", code, n)]
+    for n, (enc, num) in enumerate(zip(design["encounters"], ["3.5", "101.0"])):
+        enc["extensionAttributes"] = [_ext_attr("VISITNUM", num, n)]
+    return usdm
+
+
+class TestStatedCodes:
+    def test_armcd_from_extension(self):
+        ta = generate_domains(_with_codes())["TA"]
+        assert {r["ARM"]: r["ARMCD"] for r in ta} == {
+            "Placebo": "Pbo", "Treatment": "Trt_Hi"}
+
+    def test_etcd_from_extension_in_ta_and_te(self):
+        domains = generate_domains(_with_codes())
+        expected = {"Screening": "SCRN", "Placebo Infusion": "PBO",
+                    "Drug Infusion": "DRUG"}
+        assert {r["ELEMENT"]: r["ETCD"] for r in domains["TE"]} == expected
+        assert {r["ELEMENT"]: r["ETCD"] for r in domains["TA"]} == expected
+
+    def test_visitnum_from_extension(self):
+        tv = generate_domains(_with_codes())["TV"]
+        assert [r["VISITNUM"] for r in tv] == [3.5, 101]
+        assert isinstance(tv[1]["VISITNUM"], int)  # "101.0" written as 101
+
+    def test_url_matched_on_last_segment_only(self):
+        usdm = _fixture()
+        arm = usdm["study"]["versions"][0]["studyDesigns"][0]["arms"][0]
+        arm["extensionAttributes"] = [
+            {"id": "X1", "url": "https://example.org/NOTARMCD", "valueString": "BAD",
+             "instanceType": "ExtensionAttribute"},
+            {"id": "X2", "url": "https://other.example/ns/armcd/", "valueString": "Pbo",
+             "instanceType": "ExtensionAttribute"},
+        ]
+        ta = generate_domains(usdm)["TA"]
+        assert {r["ARMCD"] for r in ta if r["ARM"] == "Placebo"} == {"Pbo"}
+
+    def test_without_extensions_derivation_is_unchanged(self, domains):
+        assert {r["ARM"]: r["ARMCD"] for r in domains["TA"]} == {
+            "Placebo": "PLACEBO", "Treatment": "TREATMEN"}
+        assert [r["ETCD"] for r in domains["TE"]] == ["SCREENIN", "PLACEBOI", "DRUGINFU"]
+
+    def test_derived_code_avoids_stated_code(self):
+        usdm = _fixture()
+        arms = usdm["study"]["versions"][0]["studyDesigns"][0]["arms"]
+        # Arm 2 states the code that arm 1's name would derive to.
+        arms[1]["extensionAttributes"] = [_ext_attr("ARMCD", "PLACEBO", 0)]
+        ta = generate_domains(usdm)["TA"]
+        codes = {r["ARM"]: r["ARMCD"] for r in ta}
+        assert codes["Treatment"] == "PLACEBO"
+        assert codes["Placebo"] != "PLACEBO"
+
+    def test_invalid_visitnum_falls_back_to_sequence(self):
+        usdm = _fixture()
+        enc = usdm["study"]["versions"][0]["studyDesigns"][0]["encounters"]
+        enc[0]["extensionAttributes"] = [_ext_attr("VISITNUM", "Day 1", 0)]
+        enc[1]["extensionAttributes"] = [_ext_attr("VISITNUM", "nan", 1)]
+        tv = generate_domains(usdm)["TV"]
+        assert [r["VISITNUM"] for r in tv] == [1, 2]
 
 
 class TestRealExamples:
