@@ -8,7 +8,11 @@ from pathlib import Path
 
 import pytest
 
-from usdm_toolkit.trial_design import generate_domains, write_domains
+from usdm_toolkit.trial_design import (
+    generate_domains,
+    generate_domains_with_sources,
+    write_domains,
+)
 
 EXAMPLES_DIR = Path(__file__).parent.parent / "data" / "examples"
 
@@ -331,3 +335,105 @@ class TestRealExamples:
         assert len(domains["TV"]) == visits
         assert len(domains["TI"]) == len(design["eligibilityCriteria"])
         assert domains["TS"]  # never empty
+
+
+class TestSources:
+    """generate_domains_with_sources: USDM ids per generated row."""
+
+    @pytest.fixture()
+    def result(self):
+        return generate_domains_with_sources(_fixture())
+
+    def test_domains_unchanged(self, result):
+        domains, _ = result
+        assert domains == generate_domains(_fixture())
+
+    def test_sources_parallel_to_rows(self, result):
+        domains, sources = result
+        assert set(sources) == set(domains)
+        for d in domains:
+            assert len(sources[d]) == len(domains[d])
+
+    def test_ta_ids(self, result):
+        domains, sources = result
+        by_row = {(r["ARM"], r["EPOCH"]): s["usdm_ids"]
+                  for r, s in zip(domains["TA"], sources["TA"])}
+        assert by_row[("Placebo", "Treatment")] == [
+            "StudyArm_1", "StudyEpoch_2", "StudyCell_2", "StudyElement_2"]
+        assert by_row[("Treatment", "Screening")] == [
+            "StudyArm_2", "StudyEpoch_1", "StudyCell_3", "StudyElement_1"]
+
+    def test_te_tv_ti_ids(self, result):
+        _, sources = result
+        assert [s["usdm_ids"] for s in sources["TE"]] == [
+            ["StudyElement_1"], ["StudyElement_2"], ["StudyElement_3"]]
+        assert [s["usdm_ids"] for s in sources["TV"]] == [
+            ["Encounter_1"], ["Encounter_2"]]
+        assert [s["usdm_ids"] for s in sources["TI"]] == [
+            ["EligibilityCriterion_1", "EligibilityCriterionItem_1"],
+            ["EligibilityCriterion_2", "EligibilityCriterionItem_2"]]
+
+    def test_ts_ids_and_attributes(self, result):
+        domains, sources = result
+        ts = {r["TSPARMCD"]: (s["usdm_ids"], s["usdm_attribute"])
+              for r, s in zip(domains["TS"], sources["TS"])}
+        assert ts == {
+            "TITLE": (["StudyTitle_1"], "StudyTitle_1.text"),
+            "SPONSOR": (["Organization_2"], "Organization_2.name"),
+            "REGID": (["StudyIdentifier_1"], "StudyIdentifier_1.text"),
+            "TPHASE": (["AliasCode_C21"], "InterventionalStudyDesign_1.studyPhase"),
+            "INTMODEL": (["Code_C22"], "InterventionalStudyDesign_1.model"),
+            "TBLIND": (["AliasCode_C23"], "InterventionalStudyDesign_1.blindingSchema"),
+            "STYPE": (["Code_C20"], "InterventionalStudyDesign_1.studyType"),
+            "PLANSUB": (["Quantity_1"],
+                        "StudyDesignPopulation_1.plannedEnrollmentNumber"),
+        }
+
+    def test_duplicate_names_keep_exact_ids(self):
+        # Two elements with the same name: a join by name would have to guess;
+        # the ids are recorded while building, so each row keeps its own.
+        usdm = _fixture()
+        elements = usdm["study"]["versions"][0]["studyDesigns"][0]["elements"]
+        elements[2]["name"] = elements[1]["name"]
+        domains, sources = generate_domains_with_sources(usdm)
+        assert [r["ELEMENT"] for r in domains["TE"]][1:] == ["Placebo Infusion"] * 2
+        assert [s["usdm_ids"] for s in sources["TE"]][1:] == [
+            ["StudyElement_2"], ["StudyElement_3"]]
+        ta_elements = [s["usdm_ids"][3] for s in sources["TA"]]
+        assert ta_elements == ["StudyElement_1", "StudyElement_2",
+                               "StudyElement_1", "StudyElement_3"]
+
+    def test_duplicate_ids_give_empty_list(self):
+        # Two criteria carry the same id, and the planned-enrolment Quantity
+        # reuses an element's id: such an id names no single instance, so the
+        # rows read from them get [] rather than a guess.
+        usdm = _fixture()
+        design = usdm["study"]["versions"][0]["studyDesigns"][0]
+        design["eligibilityCriteria"][1]["id"] = "EligibilityCriterion_1"
+        design["population"]["plannedEnrollmentNumber"]["id"] = "StudyElement_3"
+        domains, sources = generate_domains_with_sources(usdm)
+        assert len(domains["TI"]) == 2
+        assert [s["usdm_ids"] for s in sources["TI"]] == [[], []]
+        plansub = [s for r, s in zip(domains["TS"], sources["TS"])
+                   if r["TSPARMCD"] == "PLANSUB"]
+        assert plansub == [{"usdm_ids": [], "usdm_attribute": None}]
+        assert [s["usdm_ids"] for s in sources["TE"]] == [
+            ["StudyElement_1"], ["StudyElement_2"], []]
+        assert [s["usdm_ids"] != [] for s in sources["TA"]] == [True, True, True, False]
+        assert all(s["usdm_ids"] for s in sources["TV"])  # others unaffected
+
+    def test_missing_id_gives_empty_list(self):
+        usdm = _fixture()
+        del usdm["study"]["versions"][0]["studyDesigns"][0]["elements"][0]["id"]
+        _, sources = generate_domains_with_sources(usdm)
+        assert sources["TE"][0]["usdm_ids"] == []
+        assert sources["TE"][1]["usdm_ids"] == ["StudyElement_2"]
+
+    def test_example_files_have_ids_for_every_row(self):
+        for path in sorted(EXAMPLES_DIR.glob("*.json")):
+            usdm = json.loads(path.read_text(encoding="utf-8"))
+            if "study" not in usdm:
+                continue
+            _, sources = generate_domains_with_sources(usdm)
+            for d, srcs in sources.items():
+                assert all(s["usdm_ids"] for s in srcs), (path.name, d)

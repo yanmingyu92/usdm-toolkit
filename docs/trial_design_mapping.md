@@ -83,3 +83,36 @@ resolving `ScheduleTimeline`/`Timing` graphs — roadmap item.
 | IETESTCD | `INCL`/`EXCL` prefix + `eligibilityCriteria[*].identifier` zero-padded to 3 | Prefix from the category split below **[ASSUMPTION]** |
 | IETEST | text of the `EligibilityCriterionItem` referenced by `criterionItemId`; falls back to criterion `description`/`name` | |
 | IECAT | `INCLUSION` / `EXCLUSION` from `eligibilityCriteria[*].category.decode` ("EXCL" substring test) | **[ASSUMPTION]** |
+
+## USDM ids per row (`generate_domains_with_sources`)
+
+`generate_domains_with_sources(usdm)` returns `(domains, sources)`.
+`domains` is exactly what `generate_domains(usdm)` returns; `generate_domains`,
+`write_domains` and the CSV columns are unchanged. `sources` has the same
+domain keys, and `sources[domain][i]` describes `domains[domain][i]`.
+
+The ids are recorded while each row is built, from the instances the builder
+read. They are never matched afterwards by name or value, so two instances
+with the same name still give each row its own id.
+
+| Domain | `usdm_ids` | Extra key |
+| --- | --- | --- |
+| TA | `[StudyArm, StudyEpoch, StudyCell, StudyElement]` | |
+| TE | `[StudyElement]` | |
+| TV | `[Encounter]` | |
+| TI | `[EligibilityCriterion, EligibilityCriterionItem]` (the item only when `criterionItemId` references one that exists) | |
+| TS | `[instance that holds TSVAL]`: the `StudyTitle`, `Organization`, `StudyIdentifier`, the `Code`/`AliasCode` of the design attribute, or the `Quantity` | `usdm_attribute`: `"<owner id>.<attribute>"`, e.g. `"StudyTitle_1.text"`, `"InterventionalStudyDesign_1.studyPhase"`, `"StudyDesignPopulation_1.plannedEnrollmentNumber"` |
+
+When a row has no deterministic source, it gets `usdm_ids: []` (and, for TS,
+`usdm_attribute: None`). That happens when an instance it was read from has
+no `id`, or when its `id` is carried by more than one instance in the
+document. The ids are not written to the CSVs: trial design domains have no
+column for them.
+
+```python
+from usdm_toolkit.trial_design import generate_domains_with_sources
+
+domains, sources = generate_domains_with_sources(usdm)
+for row, src in zip(domains["TA"], sources["TA"]):
+    print(row["ARMCD"], row["TAETORD"], src["usdm_ids"])
+```

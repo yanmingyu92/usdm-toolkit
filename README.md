@@ -68,6 +68,10 @@ into the output directory. The full USDM-path → SDTM-variable mapping,
 including flagged assumptions, is documented in
 [`docs/trial_design_mapping.md`](docs/trial_design_mapping.md).
 
+From Python, `usdm_toolkit.trial_design.generate_domains_with_sources(usdm)`
+also returns, for every generated row, the ids of the USDM instances it was
+built from (see the last section of the mapping document).
+
 ### rules — conformance rule executor
 
 ```bash
